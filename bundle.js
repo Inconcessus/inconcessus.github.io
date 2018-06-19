@@ -53,10 +53,21 @@ const NODE_TERM = 0xFF;
 
 __VERSION__ = "1.0.0";
 
-function writeOTBM(__OUTFILE__, data) {
-
+function writeOTBM(__OUTFILE__, json) {
+ 
   /* FUNCTION writeOTBM
    * Writes OTBM from intermediary JSON structure
+   */
+  
+  // Write all nodes
+  fs.writeFileSync(__OUTFILE__, serializeOTBM(json));
+  
+}
+
+function serializeOTBM(data) {
+
+  /* FUNCTION serializeOTBM
+   * Serializes OTBM from intermediary JSON structure
    */
 
   function writeNode(node) {
@@ -65,18 +76,12 @@ function writeOTBM(__OUTFILE__, data) {
      * Recursively writes all JSON nodes to OTBM node structure
      */
 
-    // Get the child nodes for this particular nodes: recursion
-    var child = getChildNode(node);
-    var childData = child ? Buffer.concat(child.map(writeNode)) : Buffer.alloc(0); 
-
-    // Finally parse the element itself
-    var nodeData = writeElement(node);
-
-    // Concatenate own data with child and pad the nod with start & end
+    // Concatenate own data with children (recursively)
+    // and pad the node with start & end identifier
     return Buffer.concat([
       Buffer.from([NODE_INIT]),
-      nodeData,
-      childData,
+      writeElement(node),
+      Buffer.concat(getChildNode(node).map(writeNode)),
       Buffer.from([NODE_TERM])
     ]);
 
@@ -85,6 +90,16 @@ function writeOTBM(__OUTFILE__, data) {
   function getChildNode(node) {
 
     /* FUNCTION getChildNode
+     * Returns child node or dummy array if child does not exist
+     */
+
+    return getChildNodeReal(node) || new Array();
+
+  }
+
+  function getChildNodeReal(node) {
+
+    /* FUNCTION getChildNodeReal
      * Give children of a node a particular identifier
      */
 
@@ -102,7 +117,6 @@ function writeOTBM(__OUTFILE__, data) {
         return node.features;
       default:
         return node.nodes;
-        break;
     }
 
   }
@@ -162,7 +176,7 @@ function writeOTBM(__OUTFILE__, data) {
       case HEADERS.OTBM_WAYPOINT:
         buffer = Buffer.alloc(3 + node.name.length + 5);
         buffer.writeUInt8(HEADERS.OTBM_WAYPOINT, 0);
-        buffer.writeUInt16LE(node.name.length, 1);
+        buffer.writeUInt16LE(node.name.length, 1)
         buffer.write(node.name, 3, "ASCII");
         buffer.writeUInt16LE(node.x, 3 + node.name.length);
         buffer.writeUInt16LE(node.y, 3 + node.name.length + 2);
@@ -180,7 +194,7 @@ function writeOTBM(__OUTFILE__, data) {
         buffer = Buffer.alloc(7 + node.name.length + 5);
         buffer.writeUInt8(HEADERS.OTBM_TOWN, 0);
         buffer.writeUInt32LE(node.townid, 1);
-        buffer.writeUInt16LE(node.name.length, 5);
+        buffer.writeUInt16LE(node.name.length, 5)
         buffer.write(node.name, 7, "ASCII");
         buffer.writeUInt16LE(node.x, 7 + node.name.length);
         buffer.writeUInt16LE(node.y, 7 + node.name.length + 2);
@@ -313,13 +327,7 @@ function writeOTBM(__OUTFILE__, data) {
     if(node.zones) {
       buffer = Buffer.alloc(5);
       buffer.writeUInt8(HEADERS.OTBM_ATTR_TILE_FLAGS, 0);
-      var flags = HEADERS.TILESTATE_NONE;
-      flags |= node.zones.protection && HEADERS.TILESTATE_PROTECTIONZONE;
-      flags |= node.zones.noPVP && HEADERS.TILESTATE_NOPVP;
-      flags |= node.zones.noLogout && HEADERS.TILESTATE_NOLOGOUT;
-      flags |= node.zones.PVPZone && HEADERS.TILESTATE_PVPZONE;
-      flags |= node.zones.refresh && HEADERS.TILESTATE_REFRESH;
-      buffer.writeUInt32LE(flags, 1);
+      buffer.writeUInt32LE(writeFlags(node.zones), 1);
       attributeBuffer = Buffer.concat([attributeBuffer, buffer]);
     }
 
@@ -327,15 +335,28 @@ function writeOTBM(__OUTFILE__, data) {
 
   }
 
+  function writeFlags(zones) {
+  
+    /* FUNCTION writeFlags
+     * Writes OTBM tile bit-flags to integer
+     */
+  
+    var flags = HEADERS.TILESTATE_NONE;
+  
+    flags |= zones.protection && HEADERS.TILESTATE_PROTECTIONZONE;
+    flags |= zones.noPVP && HEADERS.TILESTATE_NOPVP;
+    flags |= zones.noLogout && HEADERS.TILESTATE_NOLOGOUT;
+    flags |= zones.PVPZone && HEADERS.TILESTATE_PVPZONE;
+    flags |= zones.refresh && HEADERS.TILESTATE_REFRESH;
+  
+    return flags;
+  
+  }
+
   // OTBM Header
   const VERSION = Buffer.alloc(4).fill(0x00);
 
-  // Write all nodes
-  if(data === undefined) {
-    return Buffer.concat([VERSION, writeNode(__OUTFILE__.data)]);
-  } else {
-    fs.writeFileSync(__OUTFILE__, Buffer.concat([VERSION, writeNode(data.data)]));
-  }
+  return Buffer.concat([VERSION, writeNode(data.data)]);
 
 }
 
@@ -579,17 +600,7 @@ function readOTBM(__INFILE__) {
 
         // Tile flags indicating the type of tile (4 Bytes)
         case HEADERS.OTBM_ATTR_TILE_FLAGS:
-          var flags = data.readUInt32LE(i);
-
-          // Read individual tile flags using bitwise AND &
-          properties.zones = {
-            "protection": flags & HEADERS.TILESTATE_PROTECTIONZONE,
-            "noPVP": flags & HEADERS.TILESTATE_NOPVP,
-            "noLogout": flags & HEADERS.TILESTATE_NOLOGOUT,
-            "PVPZone": flags & HEADERS.TILESTATE_PVPZONE,
-            "refresh": flags & HEADERS.TILESTATE_REFRESH
-          }
-
+          properties.zones = readFlags(data.readUInt32LE(i));
           i += 4;
           break;
 
@@ -602,7 +613,7 @@ function readOTBM(__INFILE__) {
         // The item count (1 byte)
         case HEADERS.OTBM_ATTR_COUNT:
           properties.count = data.readUInt8(i);
-          i++;
+          i += 1;
           break;
 
         // The main item identifier	(2 bytes)
@@ -637,6 +648,23 @@ function readOTBM(__INFILE__) {
     }
 
     return properties;
+
+  }
+
+  function readFlags(flags) {
+
+    /* FUNCTION readFlags
+     * Reads OTBM bit flags
+     */
+
+    // Read individual tile flags using bitwise AND &
+    return {
+      "protection": flags & HEADERS.TILESTATE_PROTECTIONZONE,
+      "noPVP": flags & HEADERS.TILESTATE_NOPVP,
+      "noLogout": flags & HEADERS.TILESTATE_NOLOGOUT,
+      "PVPZone": flags & HEADERS.TILESTATE_PVPZONE,
+      "refresh": flags & HEADERS.TILESTATE_REFRESH
+    }
 
   }
 
@@ -717,6 +745,7 @@ function readOTBM(__INFILE__) {
 
 module.exports.read = readOTBM;
 module.exports.write = writeOTBM;
+module.exports.serialize = serializeOTBM;
 module.exports.HEADERS = HEADERS;
 module.exports.__VERSION__ = __VERSION__;
 
@@ -741,6 +770,7 @@ var OTMapGenerator = function() {
     console.log("Incompatible version of otbm2json; please update.");
   }
 
+  // Constant size of RME tile area (255x255)
   this.TILE_AREA_SIZE = 0xFF;
 
   // Default configuration to be overwritten
@@ -768,29 +798,40 @@ var OTMapGenerator = function() {
 
 }
 
-OTMapGenerator.prototype.generateMini = function(configuration) {
+OTMapGenerator.prototype.generateMinimap = function(configuration) {
 
+  /* OTMapGenerator.generateMinimapmap
+   * Generates clamped UInt8 buffer with RGBA values to be sent to canvas
+   */
+
+  var color;
+
+  // Set the configuration
   this.CONFIGURATION = configuration;
 
   // Create temporary layers
   var layers = this.generateMapLayers();
 
-  var uInt = new Uint8ClampedArray(4 * configuration.WIDTH * configuration.HEIGHT);
+  // Create a buffer the size of w * h * 4 bytes
+  var byteArray = new Uint8ClampedArray(4 * this.CONFIGURATION.WIDTH * this.CONFIGURATION.HEIGHT);
 
+  // Only go over the base layer for now
   for(var i = 0; i < 1; i++) {
     for(var j = 0; j < layers[i].length; j++) {
 
-      color = this.getMinimapColor(layers[i][j]);
+      // Color is the 6 byte hex RGB representation
+      hexColor = this.getMinimapColor(layers[i][j]);
 
-      uInt[4 * j] = (color >> 16) & 0xFF;
-      uInt[4 * j + 1] = (color >> 8) & 0xFF;
-      uInt[4 * j + 2] = color & 0xFF;
-      uInt[4 * j + 3] = 0xFF;
+      // Write RGBA in the buffer (always 0xFF for A)
+      byteArray[4 * j + 0] = (hexColor >> 16) & 0xFF;
+      byteArray[4 * j + 1] = (hexColor >> 8) & 0xFF;
+      byteArray[4 * j + 2] = (hexColor >> 0) & 0xFF;
+      byteArray[4 * j + 3] = 0xFF;
 
     }
   }
 
-  return uInt;
+  return byteArray;
 
 }
 
@@ -800,17 +841,26 @@ OTMapGenerator.prototype.getMinimapColor = function(id) {
    * Maps tile identifier to minimap color
    */
 
+  // Color constants
+  const WATER_COLOR = 0x0148C2;
+  const GRASS_COLOR = 0x00FF00;
+  const SAND_COLOR = 0xFFCC99;
+  const MOUNTAIN_COLOR = 0x666666;
+  const GRAVEL_COLOR = 0x999999;
+
+  // Map tile to minimap color
+  // default to black
   switch(id) {
     case ITEMS.WATER_TILE_ID:
-      return 0x0148C2;
+      return WATER_COLOR;
     case ITEMS.GRASS_TILE_ID:
-      return 0x00FF00;
+      return GRASS_COLOR;
     case ITEMS.SAND_TILE_ID:
-      return 0xFFCC99;
+      return SAND_COLOR;
     case ITEMS.MOUNTAIN_TILE_ID:
-      return 0x666666;
+      return MOUNTAIN_COLOR;
     case ITEMS.GRAVEL_TILE_ID:
-      return 0x999999;
+      return GRAVEL_COLOR;
     default:
       return 0x000000;
   }
@@ -849,7 +899,7 @@ OTMapGenerator.prototype.generate = function(configuration) {
   console.log("Finished generation in " + (Date.now()  - this._initialized) + "ms. Writing output to map.otbm");
 
   // Write the JSON using the OTBM2JSON lib
-  return otbm2json.write(json);
+  return otbm2json.serialize(json);
 
 }
 
@@ -1426,11 +1476,11 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
 
 // Expose the class
 module.exports.OTMapGenerator = new OTMapGenerator();
+module.exports.__VERSION__ = __VERSION__;
 
 if(require.main === module) {
 
-  var json = module.exports.OTMapGenerator.generate();
-  otbm2json.write("map.otbm", json);
+  otbm2json.write("map.otbm", module.exports.OTMapGenerator.generate());
 
 }
 
