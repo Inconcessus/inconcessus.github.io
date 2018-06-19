@@ -11,10 +11,23 @@
     <title>Open Tibia Map Generator 1.0.0</title>
 
     <style>
+      body {
+        margin-top: 16px;
+      }
       #minimap {
-        border: 1px solid lightgrey;
-    display: block;
-    margin: 0 auto;
+        border: 2px solid darkslategrey;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0px 0px 8px 4px lightgrey;
+      }
+      #cave-options {
+        display: none;
+      }
+      .alert {
+        text-align: center;
+      }
+      .text-muted {
+        text-align: center;
       }
     </style>
 
@@ -26,144 +39,183 @@
 
       <div class="row">
         <div class="col-md">
-          <div class="alert alert-warning"><h3> Open Tibia Map Generator <small> version 1.0.0 </small> </h3> </div>
+          <div class="alert alert-secondary"><h3> <b>Open Tibia Map Generator</b> <small> version <span id="otmapgen-version"></span> </small> </h3> </div>
         </div>
       </div>
 
-        <div class="row">
+      <div class="row">
 
-          <div class="col-md">
+        <div class="col-md">
 
-            <div class="form-row text-center">
-              <div class="col-12">
-                <button id="generate-map" class="btn btn-primary" title="Generating an OTBM file may take some moments">Generate OTBM</button>
-                <button id="generate-minimap" class="btn btn-primary">Generate Minimap</button>
+          <div class="form-row text-center">
+            <div class="col-12">
+              <button id="generate-map" class="btn btn-primary" title="Generating an OTBM file may take some moments">Generate OTBM</button>
+              <button id="generate-minimap" class="btn btn-primary">Generate Minimap</button>
+            </div>
+          </div>
+
+          <hr>
+          <div id="generation-status" class="alert alert-primary">
+            <b>Ok!</b> Minimap has been generated.
+          </div>
+          <hr>
+
+          <!-- Minimap container -->
+          <canvas id="minimap" width="512" height="512"></canvas>
+
+          <hr>
+
+        </div>
+
+        <div class="col-md">
+
+          <h5> Map Settings </h5>
+
+            <p> General map settings and map seed for generation.
+
+            <!-- Map SEED -->
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Map Seed</div>
+              </div>
+              <input id="map-seed" type="text" class="form-control" placeholder="0" value="0">
+            </div>
+
+            <!-- Map Width -->
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Map Width</div>
+              </div>
+              <input id="map-width" type="text" class="form-control" placeholder="512" value="512">
+            </div>
+
+            <!-- Map Height -->
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Map Height</div>
+              </div>
+              <input id="map-height" type="text" class="form-control" placeholder="512" value="512">
+            </div>
+
+            <hr> <h5> Biome Settings </h5>
+
+            <p> Settings that influence the type of terrain.
+
+            <!-- Add Sand Biome -->
+            <div class="form-check form-check-inline mb-2">
+              <input id="add-sand-biome" class="form-check-input" type="checkbox">
+              <label class="form-check-label" for="add-sand-biome">
+                Sand Biome
+              </label>
+            </div>
+
+            <!-- Add Caves -->
+            <div class="form-check form-check-inline mb-2">
+              <input id="add-caves" class="form-check-input" type="checkbox">
+              <label class="form-check-label" for="add-caves">
+                Add Caves
+              </label>
+            </div>
+
+            <!-- Euclidean Falloff -->
+            <div class="form-check form-check-inline mb-2">
+              <input id="euclidean-falloff" class="form-check-input" type="checkbox" checked>
+              <label class="form-check-label" for="euclidean-falloff">
+                Euclidean Falloff
+              </label>
+            </div>
+
+            <!-- Cave Options -->
+            <div id="cave-options">
+
+              <hr> <h5> Cave Options </h5>
+
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Cave Depth</div>
+                </div>
+                <input id="cave-depth" type="text" class="form-control" placeholder="12" value="12">
+              </div>
+
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Cave Roughness</div>
+                </div>
+                <input id="cave-roughness" type="text" class="form-control" placeholder="0.45" value="0.45">
+              </div>
+
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Cave Chance</div>
+                </div>
+                <input id="cave-chance" type="text" class="form-control" placeholder="0.005" value="0.005">
               </div>
             </div>
 
-            <hr>
-            <div id="generation-status" class="alert alert-primary"><b>Ok!</b> Minimap has been generated.</div>
-            <hr>
+            <hr> <h5> Generation Parameters </h5>
 
-            <canvas id="minimap" width="512" height="512"></canvas>
+            <p> Generation parameters are values that have an effect on detailed features of the generated map. Parameter sensitivity and response is unknown.
 
-            <hr>
+            <!-- Water Level -->
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Water Level</div>
+              </div>
+              <select class="form-control" id="water-level" title="Height of level filled with water">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Parameter A</div>
+              </div>
+              <input id="parameter-a" type="text" class="form-control" placeholder="0.05" value="0.05">
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Parameter B</div>
+              </div>
+              <input id="parameter-b" type="text" class="form-control" placeholder="2.00" value="2.00">
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Parameter C</div>
+              </div>
+              <input id="parameter-c" type="text" class="form-control" placeholder="2.00" value="2.00">
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Linear Elevation</div>
+              </div>
+              <input id="parameter-d" type="text" class="form-control" placeholder="8.00" value="8.00">
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Exponential Elevation</div>
+              </div>
+              <input id="parameter-e" type="text" class="form-control" placeholder="1.00" value="1.00">
+            </div>
 
           </div>
-
-          <div class="col-md">
-              <h5> Map Settings </h5>
-
-                <p> General map settings and random seed
-
-                <!-- Map SEED -->
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text">Map Seed</div>
-                    </div>
-                    <input id="map-seed" type="text" class="form-control" placeholder="0" value="0">
-                  </div>
-
-                <!-- Map Width -->
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text">Map Width</div>
-                    </div>
-                    <input id="map-width" type="text" class="form-control" placeholder="512" value="512">
-                  </div>
-
-                <!-- Map Height -->
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text">Map Height</div>
-                    </div>
-                    <input id="map-height" type="text" class="form-control" placeholder="512" value="512">
-                  </div>
-
-                 <hr> <h5> Biome Settings </h5>
-
-                 <p> Settings that influence the type of terrain
-
-                  <!-- Add Sand Biome -->
-                  <div class="form-check form-check-inline mb-2">
-                    <input id="add-sand-biome" class="form-check-input" type="checkbox">
-                    <label class="form-check-label" for="add-sand-biome">
-                      Sand Biome
-                    </label>
-                  </div>
-
-                  <!-- Add Caves -->
-                  <div class="form-check form-check-inline mb-2">
-                    <input id="add-caves" class="form-check-input" type="checkbox">
-                    <label class="form-check-label" for="add-caves">
-                      Add Caves
-                    </label>
-                  </div>
-
-                 <hr> <h5> Generation Parameters </h5>
-
-                 <p> Generation parameters are values that have an effect on the shape of the generated map.
-
-                  <!-- Water Level -->
-                  <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text">Water Level</div>
-                    </div>
-                    <select class="form-control" id="water-level">
-                      <option>0</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                    </select>
-                  </div>
-
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">Parameter A</div>
-                  </div>
-                  <input id="parameter-a" type="text" class="form-control" placeholder="0.05" value="0.05">
-                </div>
-
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">Parameter B</div>
-                  </div>
-                  <input id="parameter-b" type="text" class="form-control" placeholder="2.00" value="2.00">
-                </div>
-
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">Parameter C</div>
-                  </div>
-                  <input id="parameter-c" type="text" class="form-control" placeholder="2.00" value="2.00">
-                </div>
-
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">Linear Elevation</div>
-                  </div>
-                  <input id="parameter-d" type="text" class="form-control" placeholder="8.00" value="8.00">
-                </div>
-
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">Exponential Elevation</div>
-                  </div>
-                  <input id="parameter-e" type="text" class="form-control" placeholder="1.00" value="1.00">
-                </div>
-
         </div>
+
+        <hr>
+
+        <span class="text-muted">
+          <h6><small> Copyright by <a href="https://github.com/Inconcessus"><b>Forby</b></a>, 2018. All rights reserved. Licensed under ⚖ <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
+        </span>
+
       </div>
-
-      <hr>
-
-      <span class="text-muted">
-        <h6><small> Copyright by <a href="https://github.com/Inconcessus">Forby</a>, 2018. All rights reserved. Licensed under ⚖ <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
-      </span>
-
-    </div>
 
     <script src="./bundle.js"></script>
     <script src="./app.js"></script>
