@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
         "A": Number(document.getElementById("parameter-a").value) || 0.05,
         "B": Number(document.getElementById("parameter-b").value) || 2.00,
         "C": Number(document.getElementById("parameter-c").value) || 2.00,
-        "CAVE_DEPTH": 12,
-        "CAVE_ROUGHNESS": 0.45,
-        "CAVE_CHANCE": 0.005,
+        "CAVE_DEPTH": Number(document.getElementById("cave-depth").value) || 12,
+        "CAVE_ROUGHNESS": Number(document.getElementById("cave-roughness").value) || 0.45,
+        "CAVE_CHANCE": Number(document.getElementById("cave-chance").value) || 0.005,
         "SAND_BIOME": Boolean(document.getElementById("add-sand-biome").checked),
-        "EUCLIDEAN": true,
+        "EUCLIDEAN": Boolean(document.getElementById("euclidean-falloff").checked),
         "SMOOTH_COASTLINE": true,
         "ADD_CAVES": Boolean(document.getElementById("add-caves").checked),
         "WATER_LEVEL": Number(document.getElementById("water-level").value) || 0,
@@ -29,10 +29,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   
   }
-  
+
+  // Update page metadata
+  document.getElementById("otmapgen-version").innerHTML = bundle.__VERSION__;
+  document.title = "Open Tibia Map Generator " + bundle.__VERSION__;
+
   // Add an event listener to the generate map button
   document.getElementById("generate-map").addEventListener("click", generateMap);
   document.getElementById("generate-minimap").addEventListener("click", generateMinimap);
+
+  // Add listener to cave checkbox
+  document.getElementById("add-caves").addEventListener("change", function() {
+
+    // Show or hide cave options
+    if(document.getElementById("add-caves").checked) {
+      document.getElementById("cave-options").style.display = "block";
+    } else {
+      document.getElementById("cave-options").style.display = "none";
+    }
+
+  });
   
   function generateMap() {
 
@@ -43,15 +59,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // Get the configuration from the DOM (or default)
     var mapConfiguration = getConfiguration();
   
-    document.getElementById("generation-status").innerHTML = "Creating a new OTBM. This may take some moments!";
+    updateInformation("info", "Creating a new OTBM. This may take some moments!");
   
     // Defer with timeout to release the DOM
     defer(function() {
 
-      // Generate the map using the configuration
-      downloadMap(bundle.OTMapGenerator.generate(mapConfiguration));
+      try {
+        var binaryOTBM = bundle.OTMapGenerator.generate(mapConfiguration);
+      } catch(e) {
+        return updateInformation("danger", "<b>Failure!</b> Exception occured during generation of OTBM.");
+      }
 
-      document.getElementById("generation-status").innerHTML = "<b>Ok!</b> OTBM has been generated.";
+      // Generate the map using the configuration
+      downloadMap(binaryOTBM);
+
+      updateInformation("success", "<b>Ok!</b> OTBM has been generated.");
 
     });
 
@@ -67,26 +89,78 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   }
 
+  function updateInformation(type, message) {
+
+    /* function updateInformation
+     * Updates the information box with a color & message
+     */
+
+    document.getElementById("generation-status").className = "alert alert-" + type;
+    document.getElementById("generation-status").innerHTML = message;
+
+    if(type === "danger") {
+
+      var canvas = document.getElementById("minimap");
+      var context = canvas.getContext("2d");
+
+      context.beginPath();
+      context.fillStyle = "lightgrey";
+      context.arc(128, 128, 50, 0, 2 * Math.PI);
+      context.fill();
+
+      context.beginPath();
+      context.fillStyle = "lightgrey";
+      context.arc(512 - 128, 128, 50, 0, 2 * Math.PI);
+      context.fill();
+
+      context.beginPath();
+      context.strokeStyle = "lightgrey";
+      context.lineWidth = "32";
+      context.arc(256, 512 - 128, 128, Math.PI + 0.25, -0.25);
+      context.stroke();
+
+    }
+
+  }
+
   function generateMinimap() {
   
     /* function generateMinimap
      * Asks OTMapGen for a minimap preview of the generation parameters
      */
 
-    document.getElementById("generation-status").innerHTML = "Creating a new minimap. Sit tight!";
+    updateInformation("info", "Creating a new minimap. Sit tight!");
   
+    // Defer and give thread to DOM
     defer(function() {
   
       var canvas = document.getElementById("minimap");
       var context = canvas.getContext("2d");
+
+      // Fill canvas with black background
+      context.fillStyle = "black";
       context.fillRect(0, 0, canvas.width, canvas.height);
   
-      var MAP = getConfiguration();
-  
-      var imgData = new ImageData(bundle.OTMapGenerator.generateMini(MAP), MAP.WIDTH, MAP.HEIGHT);
+      var mapConfiguration = getConfiguration();
+
+      // Attempt to generate a minimap
+      try {
+        var pixelData = bundle.OTMapGenerator.generateMinimap(mapConfiguration);
+      } catch(e) {
+        return updateInformation("danger", "<b>Failed!</b> Exception in generation of minimap.");
+      }
+ 
+      // Convert UInt8ClampedArray to canvas image data
+      var imgData = new ImageData(
+        pixelData,
+        mapConfiguration.WIDTH,
+        mapConfiguration.HEIGHT
+      );
+
+      // Put the RGBA image data
       context.putImageData(imgData, 0, 0);
   
-      document.getElementById("generation-status").innerHTML = "<b>Ok!</b> Minimap has been generated.";
+      updateInformation("success", "<b>Ok!</b> Minimap has been generated.");
   
     });
   
@@ -101,15 +175,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
     const CONTENT_TYPE = "application/octet-stream";
     const FILENAME = "map.otbm";
   
-    var a = document.createElement("a");
+    var aElement = document.createElement("a");
   
     // Write encoded component and click download link
-    a.href = window.URL.createObjectURL(new Blob([content], {"type": CONTENT_TYPE}));
-    a.download = FILENAME;
-    a.click();
+    aElement.href = window.URL.createObjectURL(new Blob([content], {"type": CONTENT_TYPE}));
+    aElement.download = FILENAME;
+    aElement.click();
   
     // Clean up
-    a.remove();
+    aElement.remove();
   
   }
 
