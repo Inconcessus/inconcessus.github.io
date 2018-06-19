@@ -161,6 +161,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
       context.putImageData(imgData, 0, 0);
   
       updateInformation("success", "<b>Ok!</b> Minimap has been generated.");
+
+      // PNG Watermark
+      context.fillStyle = "white";
+      context.font = "bold 16px Arial";
+      context.fillText("Minimap Preview - SEED " + mapConfiguration.SEED, 6, 18);
   
     });
   
