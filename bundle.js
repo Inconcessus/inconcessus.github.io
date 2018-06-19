@@ -746,8 +746,8 @@ var OTMapGenerator = function() {
   // Default configuration to be overwritten
   this.CONFIGURATION = {
     "SEED": 0,
-    "WIDTH": 256,
-    "HEIGHT": 256,
+    "WIDTH": 16,
+    "HEIGHT": 16,
     "TERRAIN_ONLY": false,
     "GENERATION": {
       "A": 0.05,
@@ -795,6 +795,10 @@ OTMapGenerator.prototype.generateMini = function(configuration) {
 }
 
 OTMapGenerator.prototype.getMinimapColor = function(id) {
+
+  /* OTMapGenerator.getMinimapColor
+   * Maps tile identifier to minimap color
+   */
 
   switch(id) {
     case ITEMS.WATER_TILE_ID:
@@ -1282,8 +1286,8 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
       var coordinates = self.getCoordinates(i);  
   
       // Convert global x, y coordinates to tile area coordinates (0, 255, 510, 765)
-      var areaX = this.TILE_AREA_SIZE * Math.floor(coordinates.x / this.TILE_AREA_SIZE);
-      var areaY = this.TILE_AREA_SIZE * Math.floor(coordinates.y / this.TILE_AREA_SIZE);
+      var areaX = self.TILE_AREA_SIZE * Math.floor(coordinates.x / self.TILE_AREA_SIZE);
+      var areaY = self.TILE_AREA_SIZE * Math.floor(coordinates.y / self.TILE_AREA_SIZE);
   
       // Invert the depth
       var areaZ = 7 - z;
@@ -1406,8 +1410,8 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
       // Make sure to give coordinates in RELATIVE tile area coordinates
       tileAreas[areaIdentifier].tiles.push({
         "type": otbm2json.HEADERS.OTBM_TILE,
-        "x": coordinates.x % this.TILE_AREA_SIZE,
-        "y": coordinates.y % this.TILE_AREA_SIZE,
+        "x": coordinates.x % self.TILE_AREA_SIZE,
+        "y": coordinates.y % self.TILE_AREA_SIZE,
         "tileid": x,
         "items": items
       });
