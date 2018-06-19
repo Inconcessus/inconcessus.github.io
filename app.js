@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
      * returns thread to update GUI and invoke next callback
      */
 
-    setTimeout(callback, 0);
+    setTimeout(callback, 10);
 
   }
 
