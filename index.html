@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <title>Open Tibia Map Generator 1.0.0</title>
+
+    <style>
+      #minimap {
+        border: 1px solid lightgrey;
+    display: block;
+    margin: 0 auto;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md">
+          <div class="alert alert-warning"><h3> Open Tibia Map Generator <small> version 1.0.0 </small> </h3> </div>
+        </div>
+      </div>
+
+        <div class="row">
+
+          <div class="col-md">
+
+            <div class="form-row text-center">
+              <div class="col-12">
+                <button id="generate-map" class="btn btn-primary" title="Generating an OTBM file may take some moments">Generate OTBM</button>
+                <button id="generate-minimap" class="btn btn-primary">Generate Minimap</button>
+              </div>
+            </div>
+
+            <hr>
+            <div id="generation-status" class="alert alert-primary"><b>Ok!</b> Minimap has been generated.</div>
+            <hr>
+
+            <canvas id="minimap" width="512" height="512"></canvas>
+
+            <hr>
+
+          </div>
+
+          <div class="col-md">
+              <h5> Map Settings </h5>
+
+                <p> General map settings and random seed
+
+                <!-- Map SEED -->
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Map Seed</div>
+                    </div>
+                    <input id="map-seed" type="text" class="form-control" placeholder="0" value="0">
+                  </div>
+
+                <!-- Map Width -->
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Map Width</div>
+                    </div>
+                    <input id="map-width" type="text" class="form-control" placeholder="512" value="512">
+                  </div>
+
+                <!-- Map Height -->
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Map Height</div>
+                    </div>
+                    <input id="map-height" type="text" class="form-control" placeholder="512" value="512">
+                  </div>
+
+                 <hr> <h5> Biome Settings </h5>
+
+                 <p> Settings that influence the type of terrain
+
+                  <!-- Add Sand Biome -->
+                  <div class="form-check form-check-inline mb-2">
+                    <input id="add-sand-biome" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="add-sand-biome">
+                      Sand Biome
+                    </label>
+                  </div>
+
+                  <!-- Add Caves -->
+                  <div class="form-check form-check-inline mb-2">
+                    <input id="add-caves" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="add-caves">
+                      Add Caves
+                    </label>
+                  </div>
+
+                 <hr> <h5> Generation Parameters </h5>
+
+                 <p> Generation parameters are values that have an effect on the shape of the generated map.
+
+                  <!-- Water Level -->
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Water Level</div>
+                    </div>
+                    <select class="form-control" id="water-level">
+                      <option>0</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select>
+                  </div>
+
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Parameter A</div>
+                  </div>
+                  <input id="parameter-a" type="text" class="form-control" placeholder="0.05" value="0.05">
+                </div>
+
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Parameter B</div>
+                  </div>
+                  <input id="parameter-b" type="text" class="form-control" placeholder="2.00" value="2.00">
+                </div>
+
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Parameter C</div>
+                  </div>
+                  <input id="parameter-c" type="text" class="form-control" placeholder="2.00" value="2.00">
+                </div>
+
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Linear Elevation</div>
+                  </div>
+                  <input id="parameter-d" type="text" class="form-control" placeholder="8.00" value="8.00">
+                </div>
+
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Exponential Elevation</div>
+                  </div>
+                  <input id="parameter-e" type="text" class="form-control" placeholder="1.00" value="1.00">
+                </div>
+
+        </div>
+      </div>
+
+      <hr>
+
+      <span class="text-muted">
+        <h6><small> Copyright by Forby, 2018. All rights reserved. Licensed under ⚖ <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
+      </span>
+
+    </div>
+
+    <script src="./bundle.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<s  cript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<s  cript src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+  </body>
+
+  <script>
+
+  function getConfiguration() {
+
+    const MAP = {
+      "SEED": Number(document.getElementById("map-seed").value) || 0,
+      "WIDTH": Number(document.getElementById("map-width").value) || 512,
+      "HEIGHT": Number(document.getElementById("map-height").value) || 512,
+      "TERRAIN_ONLY": false,
+      "GENERATION": {
+        "A": Number(document.getElementById("parameter-a").value) || 0.05,
+        "B": Number(document.getElementById("parameter-b").value) || 2.00,
+        "C": Number(document.getElementById("parameter-c").value) || 2.00,
+        "CAVE_DEPTH": 12,
+        "CAVE_ROUGHNESS": 0.45,
+        "CAVE_CHANCE": 0.005,
+        "SAND_BIOME": Boolean(document.getElementById("add-sand-biome").checked),
+        "EUCLIDEAN": true,
+        "SMOOTH_COASTLINE": true,
+        "ADD_CAVES": Boolean(document.getElementById("add-caves").checked),
+        "WATER_LEVEL": Number(document.getElementById("water-level").value) || 0,
+        "EXPONENT": Number(document.getElementById("parameter-e").value) || 1.00,
+        "LINEAR": Number(document.getElementById("parameter-d").value) || 8.0
+      }
+    }
+
+    return MAP;
+
+  }
+
+  document.getElementById("generate-map").addEventListener("click", function(event) {
+    var MAP = getConfiguration();
+
+    document.getElementById("generation-status").innerHTML = "Creating a new OTBM. This may take some moments!";
+
+    setTimeout(function() {
+      downloadMap(bundle.OTMapGenerator.generate(MAP));
+      document.getElementById("generation-status").innerHTML = "<b>Ok!</b> OTBM has been generated.";
+    }, 0);
+
+  });
+
+  function generateMinimap() {
+
+    document.getElementById("generation-status").innerHTML = "Creating a new minimap. Sit tight!";
+
+    setTimeout(function() {
+
+      var canvas = document.getElementById("minimap");
+      var context = canvas.getContext("2d");
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      var MAP = getConfiguration();
+
+      var imgData = new ImageData(bundle.OTMapGenerator.generateMini(MAP), MAP.WIDTH, MAP.HEIGHT);
+      context.putImageData(imgData, 0, 0);
+
+      document.getElementById("generation-status").innerHTML = "<b>Ok!</b> Minimap has been generated.";
+
+    }, 0);
+
+  }
+
+  document.getElementById("generate-minimap").addEventListener("click", generateMinimap);
+
+    function downloadMap(content) {
+
+      const CONTENT_TYPE = "application/octet-stream";
+      const FILENAME = "map.otbm";
+
+      var a = document.createElement("a");
+
+      // Write encoded component and click download link
+      a.href = window.URL.createObjectURL(new Blob([content], {"type": CONTENT_TYPE}));
+      a.download = FILENAME;
+      a.click();
+
+      // Clean up
+      a.remove();
+
+    }
+  generateMinimap();
+
+  </script>
+
+
+</html>
