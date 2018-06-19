@@ -746,8 +746,8 @@ var OTMapGenerator = function() {
   // Default configuration to be overwritten
   this.CONFIGURATION = {
     "SEED": 0,
-    "WIDTH": 16,
-    "HEIGHT": 16,
+    "WIDTH": 256,
+    "HEIGHT": 256,
     "TERRAIN_ONLY": false,
     "GENERATION": {
       "A": 0.05,
