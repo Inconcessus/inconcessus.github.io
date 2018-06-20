@@ -1,0 +1,38 @@
+body {
+  margin-top: 16px;
+}
+
+#minimap-overlay {
+  right: 24px;
+  top: 12px;
+  height: 100px;
+  width: auto;
+  position: absolute;
+}
+
+#minimap-wrapper {
+  position: relative;
+}
+
+#minimap {
+  border: 2px solid darkslategrey;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0px 0px 8px 4px lightgrey;
+}
+
+#cave-options {
+  display: none;
+}
+
+.alert {
+  text-align: center;
+}
+
+.text-muted {
+  text-align: center;
+}
+
+canvas {
+  width: 100%;
+}

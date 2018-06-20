@@ -8,40 +8,9 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="./css/style.css">
 
     <title>Open Tibia Map Generator 1.0.0</title>
-
-    <style>
-      body {
-        margin-top: 16px;
-      }
-      #minimap-overlay {
-        right: 24px;
-        top: 12px;
-        height: 100px;
-        width: auto;
-        position: absolute;
-      }
-      #minimap-wrapper {
-        position: relative;
-      }
-      #minimap {
-        border: 2px solid darkslategrey;
-        display: block;
-        margin: 0 auto;
-        box-shadow: 0px 0px 8px 4px lightgrey;
-      }
-      #cave-options {
-        display: none;
-      }
-      .alert {
-        text-align: center;
-      }
-      .text-muted {
-        text-align: center;
-      }
-    </style>
 
   </head>
 
@@ -52,7 +21,7 @@
       <div class="row">
         <div class="col-md">
           <div class="alert alert-primary">
-            <h3> <b>🌎 Open Tibia Map Generator</b> <small> version <b><span id="otmapgen-version"></span></b> </small> </h3>
+            <h3> <b> Open Tibia Map Generator</b> <small> version <b><span id="otmapgen-version"></span></b> </small> </h3>
           </div>
         </div>
       </div>
@@ -76,7 +45,7 @@
 
           <!-- Minimap container -->
           <div id="minimap-wrapper">
-            <canvas id="minimap" width="512" height="512"></canvas>
+            <canvas class="img-responsive" id="minimap" width="512" height="512"></canvas>
             <div id="minimap-overlay">
               <div style="border: 2px solid white;" class="btn btn-sm btn-success" id="increment-layer" title="Go up one floor"><i class="fas fa-plus"></i></div>
               <div style="border: 2px solid white;" class="btn btn-sm btn-success" id="decrement-layer" title="Go down one floor"><i class="fas fa-minus"></i></div>
@@ -245,8 +214,8 @@
 
       </div>
 
-    <script src="./bundle.js"></script>
-    <script src="./app.js"></script>
+    <script src="./js/bundle.js"></script>
+    <script src="./js/app.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
