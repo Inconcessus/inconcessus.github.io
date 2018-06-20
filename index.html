@@ -16,6 +16,16 @@
       body {
         margin-top: 16px;
       }
+      #minimap-overlay {
+        right: 24px;
+        top: 12px;
+        height: 100px;
+        width: auto;
+        position: absolute;
+      }
+      #minimap-wrapper {
+        position: relative;
+      }
       #minimap {
         border: 2px solid darkslategrey;
         display: block;
@@ -41,7 +51,9 @@
 
       <div class="row">
         <div class="col-md">
-          <div class="alert alert-primary"><h3> <b>🌎 Open Tibia Map Generator</b> <small> version <b><span id="otmapgen-version"></span></b> </small> </h3> </div>
+          <div class="alert alert-primary">
+            <h3> <b>🌎 Open Tibia Map Generator</b> <small> version <b><span id="otmapgen-version"></span></b> </small> </h3>
+          </div>
         </div>
       </div>
 
@@ -52,7 +64,7 @@
           <div class="form-row text-center">
             <div class="col-12">
               <button id="generate-map" class="btn btn-primary" title="Generating an OTBM file may take some moments">Generate OTBM</button>
-              <button id="generate-minimap" class="btn btn-primary">Generate Minimap</button>
+              <button id="generate-minimap" class="btn btn-primary" title="Generate a preview minimap of the terrain">Generate Minimap</button>
             </div>
           </div>
 
@@ -63,7 +75,14 @@
           <hr>
 
           <!-- Minimap container -->
-          <canvas id="minimap" width="512" height="512"></canvas>
+          <div id="minimap-wrapper">
+            <canvas id="minimap" width="512" height="512"></canvas>
+            <div id="minimap-overlay">
+              <div style="border: 2px solid white;" class="btn btn-sm btn-success" id="increment-layer"><i class="fas fa-minus"></i></div>
+              <div style="border: 2px solid white;" class="btn btn-sm btn-success" id="decrement-layer"><i class="fas fa-plus"></i></div>
+            </div>
+          </div>
+          <div class="text-muted"> <small> This minimap shows the generated terrain only. </small> </div>
 
           <hr>
 
@@ -71,7 +90,7 @@
 
         <div class="col-md">
 
-          <h5> Map Settings </h5>
+          <h5> <i class="fas fa-map text-primary"></i> Map Settings </h5>
 
             <p> General map settings and map seed for generation.
 
@@ -105,7 +124,7 @@
               <input id="map-height" type="text" class="form-control" placeholder="512" value="512">
             </div>
 
-            <hr> <h5> Biome Settings </h5>
+            <hr> <h5> <i class="fas fa-tree text-primary"></i> Biome Settings </h5>
 
             <p> Settings that influence the type of terrain.
 
@@ -152,7 +171,7 @@
               </div>
             </div>
 
-            <hr> <h5> Generation Parameters </h5>
+            <hr> <h5> <i class="fas fa-cog text-primary"></i> Generation Parameters </h5>
 
             <p> Generation parameters are values that have an effect on detailed features of the generated map. Parameter sensitivity and response is unknown.
 
@@ -220,7 +239,7 @@
         <hr>
 
         <span class="text-muted">
-          <h6><small> Copyright by <i class="fas fa-user-astronaut"></i> <a href="https://github.com/Inconcessus"><b>Forby</b></a>, 2018. All rights reserved. Licensed under <i class="fas fa-balance-scale"></i> <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
+          <h6><small> Copyright by <i class="fab fa-github"></i> <a href="https://github.com/Inconcessus"><b>Forby</b></a>, 2018. All rights reserved. Licensed under <i class="fas fa-balance-scale"></i> <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
         </span>
 
       </div>
