@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   // Add an event listener to the generate map button
   document.getElementById("generate-map").addEventListener("click", generateMap);
   document.getElementById("generate-minimap").addEventListener("click", generateMinimap);
+  document.getElementById("random-seed").addEventListener("click", randomSeed);
 
   // Add listener to cave checkbox
   document.getElementById("add-caves").addEventListener("change", function() {
@@ -50,6 +51,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   });
   
+  function randomSeed() {
+    var value = Math.floor(Math.random() * (Number.MAX_SAFE_INTEGER - Number.MIN_SAFE_INTEGER)) + Number.MIN_SAFE_INTEGER;
+    document.getElementById("map-seed").value = value;
+    generateMinimap();
+  }
+
   function generateMap() {
 
     /* function generateMap
