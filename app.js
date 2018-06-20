@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
   
   }
 
+  _transparent = false;
+
   // Update page metadata
   document.getElementById("otmapgen-version").innerHTML = bundle.__VERSION__;
   document.title = "Open Tibia Map Generator " + bundle.__VERSION__;
@@ -41,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   document.getElementById("increment-layer").addEventListener("click", function() { _activeLayer++; showLayer() });
   document.getElementById("decrement-layer").addEventListener("click", function() { _activeLayer--; showLayer() });
+  document.getElementById("transparent-layer").addEventListener("click", function() { _transparent = !_transparent; showLayer() });
 
   // Add listener to cave checkbox
   document.getElementById("add-caves").addEventListener("change", function() {
@@ -140,6 +143,42 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var _layerData;
   var _activeLayer = 0;
 
+  function getPixelData() {
+
+    /* function getPixelData
+     * Compiles all layers to a single image with transparency
+     */
+
+    const TRANSPARENCY_VALUE = 0x40;
+
+    if(!_transparent) {
+      return _layerData.data[_activeLayer].slice(0);
+    }
+
+    var pixelData = _layerData.data[0].slice(0);
+
+    for(var i = 1; i <= _activeLayer; i++) {
+
+      for(var j = 0; j < _layerData.data[i].length; j += 4) {
+
+        // Check if value is black and set transparency
+        if(_layerData.data[i][j] === 0 && _layerData.data[i][j + 1] === 0 && _layerData.data[i][j + 2] === 0) {
+          pixelData[j + 3] = TRANSPARENCY_VALUE; continue;
+        }
+
+        // Copy layer pixel data
+        pixelData[j] = _layerData.data[i][j];
+        pixelData[j + 1] = _layerData.data[i][j + 1];
+        pixelData[j + 2] = _layerData.data[i][j + 2];
+
+      }
+
+    }
+
+    return pixelData;
+
+  }
+
   function showLayer() {
 
     _activeLayer = Math.min(Math.max(_activeLayer, 0), 7);
@@ -151,7 +190,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    var pixelData = _layerData.data[_activeLayer];
+    document.getElementById("transparent-layer").children[0].className = _transparent ? "fas fa-eye" : "fas fa-eye-slash";
+
+    var pixelData = getPixelData();
 
     // Convert UInt8ClampedArray to canvas image data
     var imgData = new ImageData(
