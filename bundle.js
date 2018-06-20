@@ -804,7 +804,7 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
    * Generates clamped UInt8 buffer with RGBA values to be sent to canvas
    */
 
-  var color;
+  var color, byteArray;
 
   // Set the configuration
   this.CONFIGURATION = configuration;
@@ -812,12 +812,21 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
   // Create temporary layers
   var layers = this.generateMapLayers();
 
-  // Create a buffer the size of w * h * 4 bytes
-  var byteArray = new Uint8ClampedArray(4 * this.CONFIGURATION.WIDTH * this.CONFIGURATION.HEIGHT);
+  var byteArrays = new Array();
 
   // Only go over the base layer for now
-  for(var i = 0; i < 1; i++) {
+  for(var i = 0; i < layers.length; i++) {
+
+    // Create a buffer the size of w * h * 4 bytes
+    byteArray = new Uint8ClampedArray(4 * this.CONFIGURATION.WIDTH * this.CONFIGURATION.HEIGHT);
+
     for(var j = 0; j < layers[i].length; j++) {
+
+      byteArray[4 * j + 3] = 0xFF;
+
+      if(layers[i][j] === 0) {
+        continue;
+      }
 
       // Color is the 6 byte hex RGB representation
       hexColor = this.getMinimapColor(layers[i][j]);
@@ -826,12 +835,17 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
       byteArray[4 * j + 0] = (hexColor >> 16) & 0xFF;
       byteArray[4 * j + 1] = (hexColor >> 8) & 0xFF;
       byteArray[4 * j + 2] = (hexColor >> 0) & 0xFF;
-      byteArray[4 * j + 3] = 0xFF;
 
     }
+
+    byteArrays.push(byteArray);
+
   }
 
-  return byteArray;
+  return {
+    "data": byteArrays,
+    "metadata": this.CONFIGURATION
+  }
 
 }
 
