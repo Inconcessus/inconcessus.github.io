@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
   document.getElementById("generate-minimap").addEventListener("click", generateMinimap);
   document.getElementById("random-seed").addEventListener("click", randomSeed);
 
+  document.getElementById("increment-layer").addEventListener("click", function() { _activeLayer++; showLayer() });
+  document.getElementById("decrement-layer").addEventListener("click", function() { _activeLayer--; showLayer() });
+
   // Add listener to cave checkbox
   document.getElementById("add-caves").addEventListener("change", function() {
 
@@ -110,6 +113,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
       var canvas = document.getElementById("minimap");
       var context = canvas.getContext("2d");
 
+      // Fill canvas with black background
+      context.fillStyle = "black";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
       context.beginPath();
       context.fillStyle = "lightgrey";
       context.arc(128, 128, 50, 0, 2 * Math.PI);
@@ -130,6 +137,40 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   }
 
+  var _layerData;
+  var _activeLayer = 0;
+
+  function showLayer() {
+
+    _activeLayer = Math.min(Math.max(_activeLayer, 0), 7);
+
+    var canvas = document.getElementById("minimap");
+    var context = canvas.getContext("2d");
+
+    // Fill canvas with black background
+    context.fillStyle = "black";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    var pixelData = _layerData.data[_activeLayer];
+
+    // Convert UInt8ClampedArray to canvas image data
+    var imgData = new ImageData(
+      pixelData,
+      _layerData.metadata.WIDTH,
+      _layerData.metadata.HEIGHT
+    );
+
+    // Put the RGBA image data
+    context.putImageData(imgData, 0, 0);
+
+    // PNG Watermark
+    context.fillStyle = "white";
+    context.font = "bold 14px sans-serif";
+    context.fillText("Minimap Preview Floor: " + _activeLayer, 6, 18);
+    context.fillText("Seed: " + _layerData.metadata.SEED.toString(16).toUpperCase(), 6, 36);
+
+  }
+
   function generateMinimap() {
   
     /* function generateMinimap
@@ -141,38 +182,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // Defer and give thread to DOM
     defer(function() {
   
-      var canvas = document.getElementById("minimap");
-      var context = canvas.getContext("2d");
-
-      // Fill canvas with black background
-      context.fillStyle = "black";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-  
       var mapConfiguration = getConfiguration();
 
       // Attempt to generate a minimap
       try {
-        var pixelData = bundle.OTMapGenerator.generateMinimap(mapConfiguration);
+        _layerData = bundle.OTMapGenerator.generateMinimap(mapConfiguration);
       } catch(e) {
         return updateInformation("danger", "<b>Failed!</b> Exception in generation of minimap.");
       }
- 
-      // Convert UInt8ClampedArray to canvas image data
-      var imgData = new ImageData(
-        pixelData,
-        mapConfiguration.WIDTH,
-        mapConfiguration.HEIGHT
-      );
 
-      // Put the RGBA image data
-      context.putImageData(imgData, 0, 0);
-  
       updateInformation("success", "<b>Ok!</b> Minimap has been generated.");
-
-      // PNG Watermark
-      context.fillStyle = "white";
-      context.font = "bold 16px Arial";
-      context.fillText("Minimap Preview - SEED " + mapConfiguration.SEED, 6, 18);
+      showLayer();
   
     });
   
