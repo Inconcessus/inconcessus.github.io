@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
 
     <title>Open Tibia Map Generator 1.0.0</title>
 
@@ -74,11 +76,17 @@
             <p> General map settings and map seed for generation.
 
             <!-- Map SEED -->
-            <div class="input-group mb-2">
+            <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">Map Seed</div>
               </div>
-              <input id="map-seed" type="text" class="form-control" placeholder="0" value="0">
+              <input id="map-seed" type="text" class="form-control" placeholder="0" value="0" title="Integer used to SEED the random number generator">
+
+              <!-- Dice Button -->
+              <div id="random-seed" class="input-group-append" title="Generate a random minimap">
+                <div class="input-group-text btn text-primary"><i class="fas fa-dice"></i></div>
+              </div>
+
             </div>
 
             <!-- Map Width -->
@@ -120,7 +128,7 @@
             <!-- Cave Options -->
             <div id="cave-options">
 
-              <hr> <h5> Cave Options </h5>
+              <hr> <h5> <i class="fas fa-eye"></i> Cave Options </h5>
 
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
@@ -212,7 +220,7 @@
         <hr>
 
         <span class="text-muted">
-          <h6><small> Copyright by <a href="https://github.com/Inconcessus"><b>Forby</b></a>, 2018. All rights reserved. Licensed under ⚖ <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
+          <h6><small> Copyright by <i class="fas fa-user-astronaut"></i> <a href="https://github.com/Inconcessus"><b>Forby</b></a>, 2018. All rights reserved. Licensed under <i class="fas fa-balance-scale"></i> <a href="https://opensource.org/licenses/MIT"><b>MIT</b></a>.</small></h6>
         </span>
 
       </div>
