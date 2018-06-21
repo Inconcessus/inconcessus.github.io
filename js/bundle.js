@@ -778,6 +778,7 @@ var OTMapGenerator = function() {
     "SEED": 0,
     "WIDTH": 256,
     "HEIGHT": 256,
+    "VERSION": 2,
     "TERRAIN_ONLY": false,
     "GENERATION": {
       "A": 0.05,
@@ -801,10 +802,8 @@ var OTMapGenerator = function() {
         {"f": 16, "weight": 0.10 },
         {"f": 32, "weight": 0.05 },
         {"f": 64, "weight": 0.05 }
-	      ]
+      ]
     },
-    "CLUTTER": {
-    }
   }
 
 }
@@ -814,6 +813,8 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
   /* OTMapGenerator.generateMinimapmap
    * Generates clamped UInt8 buffer with RGBA values to be sent to canvas
    */
+
+  const OUTLINE_COLOR = 0x80;
 
   var color, byteArray;
 
@@ -837,6 +838,11 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
       byteArray[4 * j + 3] = 0xFF;
 
       if(layers[i][j] === 0) {
+        if(layers[i][j - 1] || layers[i][j + 1] || layers[i][j - 1 - this.CONFIGURATION.WIDTH] || layers[i][j + 1 - this.CONFIGURATION.WIDTH] || layers[i][j + this.CONFIGURATION.WIDTH] || layers[i][j - this.CONFIGURATION.WIDTH] || layers[i][j + 1 + this.CONFIGURATION.WIDTH] || layers[i][j - 1 + this.CONFIGURATION.WIDTH]) {
+          byteArray[4 * j + 0] = OUTLINE_COLOR;
+          byteArray[4 * j + 1] = OUTLINE_COLOR;
+          byteArray[4 * j + 2] = OUTLINE_COLOR;
+        }
         continue;
       }
 
@@ -886,6 +892,7 @@ OTMapGenerator.prototype.getMinimapColor = function(id) {
     case ITEMS.MOUNTAIN_TILE_ID:
       return MOUNTAIN_COLOR;
     case ITEMS.GRAVEL_TILE_ID:
+    case ITEMS.STONE_TILE_ID:
       return GRAVEL_COLOR;
     default:
       return 0x000000;
@@ -937,6 +944,7 @@ OTMapGenerator.prototype.setMapHeader = function(data) {
 
   data.mapWidth = this.CONFIGURATION.WIDTH;
   data.mapHeight = this.CONFIGURATION.HEIGHT;
+  data.version = this.CONFIGURATION.VERSION;
 
   // Save the time & seed
   data.nodes[0].description += new Date().toISOString() + " (" + this.CONFIGURATION.SEED + ")";
