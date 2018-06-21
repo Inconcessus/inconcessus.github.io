@@ -792,7 +792,18 @@ var OTMapGenerator = function() {
       "ADD_CAVES": false,
       "WATER_LEVEL": 0.0,
       "EXPONENT": 1.00,
-      "LINEAR": 8.0
+      "LINEAR": 8.0,
+      "FREQUENCIES": [
+        {"f": 1, "weight": 0.30 },
+        {"f": 2, "weight": 0.20 },
+        {"f": 4, "weight": 0.20 },
+        {"f": 8, "weight": 0.10 },
+        {"f": 16, "weight": 0.10 },
+        {"f": 32, "weight": 0.05 },
+        {"f": 64, "weight": 0.05 }
+	      ]
+    },
+    "CLUTTER": {
     }
   }
 
@@ -812,7 +823,7 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
   // Create temporary layers
   var layers = this.generateMapLayers();
 
-  var byteArrays = new Array();
+  var pngLayers = new Array();
 
   // Only go over the base layer for now
   for(var i = 0; i < layers.length; i++) {
@@ -822,6 +833,7 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
 
     for(var j = 0; j < layers[i].length; j++) {
 
+      // Set alpha value to 0xFF
       byteArray[4 * j + 3] = 0xFF;
 
       if(layers[i][j] === 0) {
@@ -838,12 +850,12 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
 
     }
 
-    byteArrays.push(byteArray);
+    pngLayers.push(byteArray);
 
   }
 
   return {
-    "data": byteArrays,
+    "data": pngLayers,
     "metadata": this.CONFIGURATION
   }
 
@@ -883,7 +895,7 @@ OTMapGenerator.prototype.getMinimapColor = function(id) {
 
 OTMapGenerator.prototype.generate = function(configuration) {
 
-  /* OTMapGenerator.generate
+  /* FUNCTION OTMapGenerator.generate
    * Generates OTBM map and returns OTBMJSON representation
    */
 
@@ -1043,6 +1055,10 @@ OTMapGenerator.prototype.smoothCoastline = function(layers) {
 }
 
 OTMapGenerator.prototype.countNeighboursNegative = function(neighbours, id) {
+
+  /* FUNCTION countNeighboursNegative
+   * Counts the number of neighbours that do not have a particular ID 
+   */
 
   return Object.keys(neighbours).filter(function(x) {
     return neighbours[x] !== ITEMS.GRAVEL_TILE_ID && neighbours[x] !== id;
@@ -1270,14 +1286,9 @@ OTMapGenerator.prototype.zNoiseFunction = function(x, y) {
     var d = 2 * Math.max(Math.abs(nx), Math.abs(ny));
   }
 
-  // Noise frequencies and weights
-  var noise = (
-    this.simplex2freq(1, 1.00, nx, ny) + 
-    this.simplex2freq(2, 0.5, nx, ny) +
-    this.simplex2freq(4, 0.5, nx, ny) +
-    this.simplex2freq(16, 0.25, nx, ny) +
-    this.simplex2freq(32, 0.1, nx, ny)
-  ) / (1.00 + 0.5 +  0.5 + 0.25 + 0.1);
+  var noise = this.CONFIGURATION.GENERATION.FREQUENCIES.reduce(function(total, x) {
+    return total + this.simplex2freq(x.f, x.weight, nx, ny);
+  }.bind(this), 0);
 
   // Some exponent for mountains?
   noise = Math.pow(noise, e);
