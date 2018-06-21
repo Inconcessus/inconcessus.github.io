@@ -32,8 +32,8 @@
 
           <div class="form-row text-center">
             <div class="col-12">
-              <button id="generate-map" class="btn btn-primary" title="Generating an OTBM file may take some moments">Generate OTBM</button>
-              <button id="generate-minimap" class="btn btn-primary" title="Generate a preview minimap of the terrain">Generate Minimap</button>
+              <button id="generate-map" class="btn btn-primary" title="Generating an OTBM file may take some moments"><i class="fas fa-download"></i> Generate OTBM</button>
+              <button id="generate-minimap" class="btn btn-primary" title="Generate a preview minimap of the terrain"><i class="fas fa-paint-brush"></i> Generate Minimap</button>
             </div>
           </div>
 
@@ -112,6 +112,59 @@
               <label class="form-check-label" for="add-caves">
                 Add Caves
               </label>
+            </div>
+
+            <hr> <h5> <i class="fas fa-sliders-h text-primary"></i> Noise Frequencies </h5>
+            <p> Noise frequencies control the terrain elevation by stacking frequencies at given weights. Higher frequencies introduce a larger level of detail.
+
+            <!-- Lower Frequencies 1, 2, 4, 8 -->
+            <div class="form-row form-group">
+              <div class="input-group col-md-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>1</sub></div>
+                </div>
+                <input id="frequency-1" type="text" class="form-control" placeholder="0.30" value="0.30">
+              </div>
+              <div class="input-group col-md-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>2</sub></div>
+                </div>
+                <input id="frequency-2" type="text" class="form-control" placeholder="0.20" value="0.20">
+              </div>
+              <div class="input-group col-md-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>4</sub></div>
+                </div>
+                <input id="frequency-4" type="text" class="form-control" placeholder="0.20" value="0.20">
+              </div>
+              <div class="input-group col-md-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>8</sub></div>
+                </div>
+                <input id="frequency-8" type="text" class="form-control" placeholder="0.125" value="0.125">
+              </div>
+            </div>
+
+            <!-- High Frequencies 16, 32, 64 -->
+            <div class="form-row form-group">
+              <div class="input-group col-md-4">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>16</sub></div>
+                </div>
+                <input id="frequency-16" type="text" class="form-control" placeholder="0.10" value="0.10">
+              </div>
+              <div class="input-group col-md-4">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>32</sub></div>
+                </div>
+                <input id="frequency-32" type="text" class="form-control" placeholder="0.05" value="0.05">
+              </div>
+              <div class="input-group col-md-4">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">f<sub>64</sub></div>
+                </div>
+                <input id="frequency-64" type="text" class="form-control" placeholder="0.025" value="0.025">
+              </div>
             </div>
 
             <!-- Cave Options -->
