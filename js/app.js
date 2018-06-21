@@ -24,7 +24,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
         "ADD_CAVES": Boolean(document.getElementById("add-caves").checked),
         "WATER_LEVEL": Number(document.getElementById("water-level").value) || 0,
         "EXPONENT": Number(document.getElementById("parameter-e").value) || 1.00,
-        "LINEAR": Number(document.getElementById("parameter-d").value) || 8.0
+        "LINEAR": Number(document.getElementById("parameter-d").value) || 8.0,
+        "FREQUENCIES": [
+          {"f": 1, "weight": Number(document.getElementById("frequency-1").value)},
+          {"f": 2, "weight": Number(document.getElementById("frequency-2").value)},
+          {"f": 4, "weight": Number(document.getElementById("frequency-4").value)},
+          {"f": 8, "weight": Number(document.getElementById("frequency-8").value)},
+          {"f": 16, "weight": Number(document.getElementById("frequency-16").value)},
+          {"f": 32, "weight": Number(document.getElementById("frequency-32").value)},
+          {"f": 64, "weight": Number(document.getElementById("frequency-64").value)}
+        ]
       }
     }
   
