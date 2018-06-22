@@ -758,7 +758,7 @@ const clutter = require("./lib/clutter");
 const ITEMS = require("./json/items");
 const VERSIONS = require("./json/versions");
 
-const __VERSION__ = "1.1.0";
+const __VERSION__ = "1.2.0";
 
 var OTMapGenerator = function() {
 
