@@ -1747,11 +1747,23 @@ module.exports={
     "itemsMinorVersion": 57,
     "maxId": 26381
   },
+  "8.70": {
+    "version": 2,
+    "itemsMajorVersion": 3,
+    "itemsMinorVersion": 23,
+    "maxId": 13331
+  },
   "8.60": {
     "version": 2,
     "itemsMajorVersion": 3,
     "itemsMinorVersion": 20,
     "maxId": 12660
+  },
+  "8.54": {
+    "version": 2,
+    "itemsMajorVersion": 3,
+    "itemsMinorVersion": 17,
+    "maxId": 11394
   },
   "8.40": {
     "version": 1,
@@ -1765,10 +1777,22 @@ module.exports={
     "itemsMinorVersion": 8,
     "maxId": 8270
   },
+  "8.00": {
+    "version": 1,
+    "itemsMajorVersion": 2,
+    "itemsMinorVersion": 7,
+    "maxId": 7475
+  },
   "7.60": {
     "version": 0,
     "itemsMajorVersion": 1,
     "itemsMinorVersion": 3,
+    "maxId": 5089
+  },
+  "7.40": {
+    "version": 0,
+    "itemsMajorVersion": 1,
+    "itemsMinorVersion": 1,
     "maxId": 5089
   }
 }
