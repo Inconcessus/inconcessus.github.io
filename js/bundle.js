@@ -815,6 +815,26 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
    * Generates clamped UInt8 buffer with RGBA values to be sent to canvas
    */
 
+  function shouldOutline(layer, j, width) {
+
+    /* function shouldOutline
+     * Determines whether the pixel is an outline by checking
+     * is any of the 8 neighbouring pixels is filled
+     */
+
+    return (
+      layer[j - 1] ||
+      layer[j + 1] ||
+      layer[j + width] ||
+      layer[j - width] ||
+      layer[j - 1 - width] ||
+      layer[j + 1 - width] ||
+      layer[j + 1 + width] ||
+      layer[j - 1 + width]
+    );
+
+  }
+
   const OUTLINE_COLOR = 0x80;
 
   var color, byteArray;
@@ -838,8 +858,9 @@ OTMapGenerator.prototype.generateMinimap = function(configuration) {
       // Set alpha value to 0xFF
       byteArray[4 * j + 3] = 0xFF;
 
+      // No tile: skip or outline
       if(layers[i][j] === 0) {
-        if(layers[i][j - 1] || layers[i][j + 1] || layers[i][j - 1 - this.CONFIGURATION.WIDTH] || layers[i][j + 1 - this.CONFIGURATION.WIDTH] || layers[i][j + this.CONFIGURATION.WIDTH] || layers[i][j - this.CONFIGURATION.WIDTH] || layers[i][j + 1 + this.CONFIGURATION.WIDTH] || layers[i][j - 1 + this.CONFIGURATION.WIDTH]) {
+        if(shouldOutline(layers[i], j, this.CONFIGURATION.WIDTH)) {
           byteArray[4 * j + 0] = OUTLINE_COLOR;
           byteArray[4 * j + 1] = OUTLINE_COLOR;
           byteArray[4 * j + 2] = OUTLINE_COLOR;
@@ -914,7 +935,8 @@ OTMapGenerator.prototype.generate = function(configuration) {
   }
 
   // Default blueprint for OTBMJSON
-  var json = require("./json/header");
+  // Create a deep copy in memory using the JSON module
+  var json = JSON.parse(JSON.stringify(require("./json/header")));
 
   // Create temporary layers
   var layers = this.generateMapLayers();
@@ -1409,7 +1431,7 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
         
         // Mountain tile: border outside 
         if(!items.length && x !== ITEMS.MOUNTAIN_TILE_ID) {
-          items = items.concat(border.getMountainWallOuter(neighbours).map(createOTBMItem));
+          items = items.concat(border.getMountainWallOuter(neighbours));
         }
         
         // Empty tiles can be skipped now
@@ -1419,7 +1441,7 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
         
         // Mountain tile: border inside  
         if(!items.length && x === ITEMS.MOUNTAIN_TILE_ID) {
-          items = items.concat(border.getMountainWall(neighbours).map(createOTBMItem));
+          items = items.concat(border.getMountainWall(neighbours));
         }
         
         n = (self.simplex2freq(8, 3, coordinates.x, coordinates.y) + self.simplex2freq(16, 0.5, coordinates.x, coordinates.y) + self.simplex2freq(32, 0.5, coordinates.x, coordinates.y)) / 4;
@@ -1428,76 +1450,80 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
         // Check if the tile is occupied
         if(!items.length && x === ITEMS.GRASS_TILE_ID) {
           if(n > 0) {
-            items.push(createOTBMItem(clutter.randomTree()));
+            items.push(clutter.randomTree());
           }
         }
         
         // Add a random water plant
         if(!items.length && x === ITEMS.WATER_TILE_ID) {
-          items.push(createOTBMItem(clutter.randomWaterPlant(self.countNeighbours(neighbours, ITEMS.GRASS_TILE_ID))));
+          items.push(clutter.randomWaterPlant(self.countNeighbours(neighbours, ITEMS.GRASS_TILE_ID)));
         }
         
         if(!items.length && (x === ITEMS.GRASS_TILE_ID || x === ITEMS.SAND_TILE_ID) && self.countNeighbours(neighbours, ITEMS.WATER_TILE_ID)) {
           if(n > 0 && Math.random() < 0.075) {
-            items.push(createOTBMItem(clutter.randomSandstoneMossy()));
+            items.push(clutter.randomSandstoneMossy());
           }
         }
         
         if(!items.length && x === ITEMS.SAND_TILE_ID) {
           if(n > 0 && Math.random() < 0.25 && self.countNeighbours(neighbours, ITEMS.WATER_TILE_ID) === 0) {
-            items.push(createOTBMItem(clutter.randomPebble()));
+            items.push(clutter.randomPebble());
           } else if(n > 0.33 && Math.random() < 0.25) {
-            items.push(createOTBMItem(clutter.randomCactus()));
+            items.push(clutter.randomCactus());
           } else if(Math.random() < 0.45) {
-            items.push(createOTBMItem(clutter.randomPalmTree(neighbours)));
+            items.push(clutter.randomPalmTree(neighbours));
            } else if(z === 0 && Math.random() < 0.075) {
-            items.push(createOTBMItem(clutter.randomShell()));
+            items.push(clutter.randomShell());
            } else if(Math.random() < 0.015) {
-            items.push(createOTBMItem(clutter.randomSandstone()));
+            items.push(clutter.randomSandstone());
            }
          }
         
         // Add a random water plant
         if(x === ITEMS.STONE_TILE_ID) {
           if(n > 0.25) {
-            items.push(createOTBMItem(clutter.randomTileMoss()));
+            items.push(clutter.randomTileMoss());
           }
           if(n > 0 && Math.random() < 0.5) {
-            items.push(createOTBMItem(clutter.randomPebble()));
+            items.push(clutter.randomPebble());
           }
         }
 
         if(x === ITEMS.GRAVEL_TILE_ID) {
-          items = items.concat(border.getGrassBorder(neighbours).map(createOTBMItem));
+          items = items.concat(border.getGrassBorder(neighbours));
         }
         
         if(x === ITEMS.SAND_TILE_ID) {
-          items = items.concat(border.getWaterBorderSand(neighbours).map(createOTBMItem));
+          items = items.concat(border.getWaterBorderSand(neighbours));
         }
         
         if(x === ITEMS.GRAVEL_TILE_ID || x === ITEMS.GRASS_TILE_ID) {
-          items = items.concat(border.getSandBorder(neighbours).map(createOTBMItem));
+          items = items.concat(border.getSandBorder(neighbours));
         }
         
         // Border grass & water interface
         if(x === ITEMS.GRASS_TILE_ID) {
-          items = items.concat(border.getWaterBorder(neighbours).map(createOTBMItem));
+          items = items.concat(border.getWaterBorder(neighbours));
         }
         
         // Border on top of mountain
         if(x === ITEMS.GRASS_TILE_ID || x === ITEMS.STONE_TILE_ID || x === ITEMS.SAND_TILE_ID) {
-          items = items.concat(border.getFloatingBorder(neighbours).map(createOTBMItem));
+          items = items.concat(border.getFloatingBorder(neighbours));
         }
         
         // Border at foot of mountain
         if(x !== ITEMS.MOUNTAIN_TILE_ID) {
-          items = items.concat(border.getMountainBorder(neighbours).map(createOTBMItem));
+          items = items.concat(border.getMountainBorder(neighbours));
         }
 
       }
 
       // Randomize the tile
       x = clutter.randomizeTile(x);
+
+      items = items.filter(function(y) {
+        return y < VERSIONS[self.CONFIGURATION.VERSION].maxId;
+      }).map(createOTBMItem);
 
       // Add the tile to the tile area
       // Make sure to give coordinates in RELATIVE tile area coordinates
@@ -1712,6 +1738,7 @@ module.exports={
   "MOUNTAIN_WALL_OUTER_X": 874,
   "MOUNTAIN_WALL_OUTER_XY": 877
 }
+
 },{}],6:[function(require,module,exports){
 module.exports={
   "10.98": {
@@ -2438,6 +2465,7 @@ module.exports.randomPebble = randomPebble;
 module.exports.randomizeTile = randomizeTile;
 module.exports.randomSandstone = randomSandstone;
 module.exports.randomSandstoneMossy = randomSandstoneMossy
+
 },{"../json/items":5}],9:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
