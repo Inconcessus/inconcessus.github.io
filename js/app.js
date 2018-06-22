@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       "SEED": Number(document.getElementById("map-seed").value) || 0,
       "WIDTH": Number(document.getElementById("map-width").value) || 512,
       "HEIGHT": Number(document.getElementById("map-height").value) || 512,
+      "VERSION": document.getElementById("map-version").value,
       "TERRAIN_ONLY": false,
       "GENERATION": {
         "A": Number(document.getElementById("parameter-a").value) || 0.05,
