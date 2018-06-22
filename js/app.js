@@ -268,6 +268,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
   
     var aElement = document.createElement("a");
   
+    // Firefox fix
+    document.body.appendChild(aElement);
+    aElement.target = "_self";
+
     // Write encoded component and click download link
     aElement.href = window.URL.createObjectURL(new Blob([content], {"type": CONTENT_TYPE}));
     aElement.download = FILENAME;
