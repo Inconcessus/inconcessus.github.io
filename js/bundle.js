@@ -750,12 +750,13 @@ module.exports.HEADERS = HEADERS;
 module.exports.__VERSION__ = __VERSION__;
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/headers":1,"buffer":10,"fs":9}],3:[function(require,module,exports){
+},{"./lib/headers":1,"buffer":11,"fs":10}],3:[function(require,module,exports){
 const otbm2json = require("./OTBM2JSON/otbm2json");
 const noise = require("./lib/noise").noise;
 const border = require("./lib/border");
 const clutter = require("./lib/clutter");
 const ITEMS = require("./json/items");
+const VERSIONS = require("./json/versions");
 
 const __VERSION__ = "1.1.0";
 
@@ -778,7 +779,7 @@ var OTMapGenerator = function() {
     "SEED": 0,
     "WIDTH": 256,
     "HEIGHT": 256,
-    "VERSION": 2,
+    "VERSION": "10.98",
     "TERRAIN_ONLY": false,
     "GENERATION": {
       "A": 0.05,
@@ -942,9 +943,18 @@ OTMapGenerator.prototype.setMapHeader = function(data) {
    * Writes RME map header OTBM_MAP_DATA
    */
 
+  if(!VERSIONS.hasOwnProperty(this.CONFIGURATION.VERSION)) {
+    throw("Map version not supported.");
+  }
+
   data.mapWidth = this.CONFIGURATION.WIDTH;
   data.mapHeight = this.CONFIGURATION.HEIGHT;
-  data.version = this.CONFIGURATION.VERSION;
+
+  var versionAttributes = VERSIONS[this.CONFIGURATION.VERSION];
+
+  data.version = versionAttributes.version;
+  data.itemsMajorVersion = versionAttributes.itemsMajorVersion;
+  data.itemsMinorVersion = versionAttributes.itemsMinorVersion;
 
   // Save the time & seed
   data.nodes[0].description += new Date().toISOString() + " (" + this.CONFIGURATION.SEED + ")";
@@ -1517,7 +1527,7 @@ if(require.main === module) {
 
 }
 
-},{"./OTBM2JSON/otbm2json":2,"./json/header":4,"./json/items":5,"./lib/border":6,"./lib/clutter":7,"./lib/noise":8}],4:[function(require,module,exports){
+},{"./OTBM2JSON/otbm2json":2,"./json/header":4,"./json/items":5,"./json/versions":6,"./lib/border":7,"./lib/clutter":8,"./lib/noise":9}],4:[function(require,module,exports){
 module.exports={
         "version": "1.0.0",
         "identifier": 0,
@@ -1703,6 +1713,40 @@ module.exports={
   "MOUNTAIN_WALL_OUTER_XY": 877
 }
 },{}],6:[function(require,module,exports){
+module.exports={
+  "10.98": {
+    "version": 2,
+    "itemsMajorVersion": 3,
+    "itemsMinorVersion": 57,
+    "maxId": 26381
+  },
+  "8.60": {
+    "version": 2,
+    "itemsMajorVersion": 3,
+    "itemsMinorVersion": 20,
+    "maxId": 12660
+  },
+  "8.40": {
+    "version": 1,
+    "itemsMajorVersion": 3,
+    "itemsMinorVersion": 12,
+    "maxId": 10017
+  },
+  "8.10": {
+    "version": 1,
+    "itemsMajorVersion": 2,
+    "itemsMinorVersion": 8,
+    "maxId": 8270
+  },
+  "7.60": {
+    "version": 0,
+    "itemsMajorVersion": 1,
+    "itemsMinorVersion": 3,
+    "maxId": 5089
+  }
+}
+
+},{}],7:[function(require,module,exports){
 const ITEMS = require("../json/items");
 
 function getMountainWallOuter(neighbours) {
@@ -2150,7 +2194,7 @@ module.exports.getMountainWall = getMountainWall;
 module.exports.getWaterBorderSand = getWaterBorderSand;
 module.exports.getSandBorder = getSandBorder;
 module.exports.getGrassBorder = getGrassBorder;
-},{"../json/items":5}],7:[function(require,module,exports){
+},{"../json/items":5}],8:[function(require,module,exports){
 const ITEMS = require("../json/items");
 
 function getRandomBetween(min, max) {
@@ -2394,7 +2438,7 @@ module.exports.randomPebble = randomPebble;
 module.exports.randomizeTile = randomizeTile;
 module.exports.randomSandstone = randomSandstone;
 module.exports.randomSandstoneMossy = randomSandstoneMossy
-},{"../json/items":5}],8:[function(require,module,exports){
+},{"../json/items":5}],9:[function(require,module,exports){
 /*
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -2706,9 +2750,9 @@ module.exports.randomSandstoneMossy = randomSandstoneMossy
 
 })(this);
 
-},{}],9:[function(require,module,exports){
-
 },{}],10:[function(require,module,exports){
+
+},{}],11:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -4446,7 +4490,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":11,"ieee754":12}],11:[function(require,module,exports){
+},{"base64-js":12,"ieee754":13}],12:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -4599,7 +4643,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
