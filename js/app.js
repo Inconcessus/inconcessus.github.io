@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
      */
 
     const CONTENT_TYPE = "application/octet-stream";
-    const FILENAME = "map.otbm";
+    const FILENAME = "map-" + document.getElementById("map-version").value + ".otbm";
   
     var aElement = document.createElement("a");
   
