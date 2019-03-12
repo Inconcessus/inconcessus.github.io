@@ -1,47 +1,40 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.bundle = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const HEADERS =  {
-  "OTBM_MAP_HEADER": "0x00",
-  "OTBM_MAP_DATA": "0x02",
-  "OTBM_TILE_AREA": "0x04",
-  "OTBM_TILE": "0x05",
-  "OTBM_ITEM": "0x06",
-  "OTBM_TOWNS": "0x0C",
-  "OTBM_TOWN": "0x0D",
-  "OTBM_HOUSETILE": "0x0E",
-  "OTBM_WAYPOINTS": "0x0F",
-  "OTBM_WAYPOINT": "0x10",
-  
-  "OTBM_ATTR_DESCRIPTION": "0x01",
-  "OTBM_ATTR_EXT_FILE": "0x02",
-  "OTBM_ATTR_TILE_FLAGS": "0x03",
-  "OTBM_ATTR_ACTION_ID": "0x04",
-  "OTBM_ATTR_UNIQUE_ID": "0x05",
-  "OTBM_ATTR_TEXT": "0x06",
-  "OTBM_ATTR_DESC": "0x07",
-  "OTBM_ATTR_TELE_DEST": "0x08",
-  "OTBM_ATTR_ITEM": "0x09",
-  "OTBM_ATTR_DEPOT_ID": "0x0A",
-  "OTBM_ATTR_EXT_SPAWN_FILE": "0x0B",
-  "OTBM_ATTR_EXT_HOUSE_FILE": "0x0D",
-  "OTBM_ATTR_HOUSEDOORID": "0x0E",
-  "OTBM_ATTR_COUNT": "0x0F",
-  "OTBM_ATTR_RUNE_CHARGES": "0x16",
-  
-  "TILESTATE_NONE": "0x0000",
-  "TILESTATE_PROTECTIONZONE": "0x0001",
-  "TILESTATE_DEPRECATED": "0x0002",
-  "TILESTATE_NOPVP": "0x0004",
-  "TILESTATE_NOLOGOUT": "0x0008",
-  "TILESTATE_PVPZONE": "0x0010",
-  "TILESTATE_REFRESH": "0x0020"
+module.exports = {
+  "OTBM_MAP_HEADER": 0x00,
+  "OTBM_MAP_DATA": 0x02,
+  "OTBM_TILE_AREA": 0x04,
+  "OTBM_TILE": 0x05,
+  "OTBM_ITEM": 0x06,
+  "OTBM_TOWNS": 0x0C,
+  "OTBM_TOWN": 0x0D,
+  "OTBM_HOUSETILE": 0x0E,
+  "OTBM_WAYPOINTS": 0x0F,
+  "OTBM_WAYPOINT": 0x10,
+
+  "OTBM_ATTR_DESCRIPTION": 0x01,
+  "OTBM_ATTR_EXT_FILE": 0x02,
+  "OTBM_ATTR_TILE_FLAGS": 0x03,
+  "OTBM_ATTR_ACTION_ID": 0x04,
+  "OTBM_ATTR_UNIQUE_ID": 0x05,
+  "OTBM_ATTR_TEXT": 0x06,
+  "OTBM_ATTR_DESC": 0x07,
+  "OTBM_ATTR_TELE_DEST": 0x08,
+  "OTBM_ATTR_ITEM": 0x09,
+  "OTBM_ATTR_DEPOT_ID": 0x0A,
+  "OTBM_ATTR_EXT_SPAWN_FILE": 0x0B,
+  "OTBM_ATTR_EXT_HOUSE_FILE": 0x0D,
+  "OTBM_ATTR_HOUSEDOORID": 0x0E,
+  "OTBM_ATTR_COUNT": 0x0F,
+  "OTBM_ATTR_RUNE_CHARGES": 0x16,
+
+  "TILESTATE_NONE": 0x0000,
+  "TILESTATE_PROTECTIONZONE": 0x0001,
+  "TILESTATE_DEPRECATED": 0x0002,
+  "TILESTATE_NOPVP": 0x0004,
+  "TILESTATE_NOLOGOUT": 0x0008,
+  "TILESTATE_PVPZONE": 0x0010,
+  "TILESTATE_REFRESH": 0x0020
 }
-
-Object.keys(HEADERS).forEach(function(x) {
-  HEADERS[x] = Number(HEADERS[x]);
-});
-
-module.exports = HEADERS;
-
 },{}],2:[function(require,module,exports){
 (function (Buffer){
 const fs = require("fs");
@@ -51,22 +44,24 @@ const NODE_ESC = 0xFD;
 const NODE_INIT = 0xFE;
 const NODE_TERM = 0xFF;
 
-__VERSION__ = "1.0.0";
+__VERSION__ = "1.0.1";
 
-function writeOTBM(__OUTFILE__, json) {
- 
-  /* FUNCTION writeOTBM
+function writeOTBM(__OUTFILE__, data) {
+
+  /*
+   * Function writeOTBM
    * Writes OTBM from intermediary JSON structure
    */
-  
+
   // Write all nodes
-  fs.writeFileSync(__OUTFILE__, serializeOTBM(json));
+  fs.writeFileSync(__OUTFILE__, serializeOTBM(data));
   
 }
 
 function serializeOTBM(data) {
 
-  /* FUNCTION serializeOTBM
+  /*
+   * Function serializeOTBM
    * Serializes OTBM from intermediary JSON structure
    */
 
@@ -323,6 +318,22 @@ function serializeOTBM(data) {
       attributeBuffer = Buffer.concat([attributeBuffer, buffer]);
     }
 
+    // Write depot identifier
+    if(node.depotId) {
+      buffer = Buffer.alloc(3);
+      buffer.writeUInt8(HEADERS.OTBM_ATTR_DEPOT_ID, 0);
+      buffer.writeUInt16LE(node.depotId, 1);
+      attributeBuffer = Buffer.concat([attributeBuffer, buffer]);
+    }
+
+    // Write house door ID
+    if(node.houseDoorId) {
+      buffer = Buffer.alloc(2);
+      buffer.writeUInt8(HEADERS.OTBM_ATTR_HOUSEDOORID, 0);
+      buffer.writeUInt8(node.houseDoorId, 1);
+      attributeBuffer = Buffer.concat([attributeBuffer, buffer]);
+    }
+
     // Write the zone fields
     if(node.zones) {
       buffer = Buffer.alloc(5);
@@ -356,6 +367,7 @@ function serializeOTBM(data) {
   // OTBM Header
   const VERSION = Buffer.alloc(4).fill(0x00);
 
+  // Write all nodes
   return Buffer.concat([VERSION, writeNode(data.data)]);
 
 }
@@ -753,12 +765,13 @@ module.exports.__VERSION__ = __VERSION__;
 },{"./lib/headers":1,"buffer":11,"fs":10}],3:[function(require,module,exports){
 const otbm2json = require("./OTBM2JSON/otbm2json");
 const noise = require("./lib/noise").noise;
+const fs = require("fs");
 const border = require("./lib/border");
 const clutter = require("./lib/clutter");
 const ITEMS = require("./json/items");
 const VERSIONS = require("./json/versions");
 
-const __VERSION__ = "1.2.0";
+const __VERSION__ = "1.3.0";
 
 var OTMapGenerator = function() {
 
@@ -767,8 +780,8 @@ var OTMapGenerator = function() {
    */
 
   // Check OTBM2JSON version
-  if(otbm2json.__VERSION__ !== "1.0.0") {
-    console.log("Incompatible version of otbm2json; please update.");
+  if(otbm2json.__VERSION__.split(".").shift() !== "1") {
+    return console.log("Incompatible version of otbm2json; please update.");
   }
 
   // Constant size of RME tile area (255x255)
@@ -901,6 +914,7 @@ OTMapGenerator.prototype.getMinimapColor = function(id) {
   const SAND_COLOR = 0xFFCC99;
   const MOUNTAIN_COLOR = 0x666666;
   const GRAVEL_COLOR = 0x999999;
+  const SNOW_COLOR = 0xFFFFFF;
 
   // Map tile to minimap color
   // default to black
@@ -916,6 +930,8 @@ OTMapGenerator.prototype.getMinimapColor = function(id) {
     case ITEMS.GRAVEL_TILE_ID:
     case ITEMS.STONE_TILE_ID:
       return GRAVEL_COLOR;
+    case ITEMS.SNOW_TILE_ID:
+      return SNOW_COLOR;
     default:
       return 0x000000;
   }
@@ -952,9 +968,7 @@ OTMapGenerator.prototype.generate = function(configuration) {
   // Write the map header
   this.setMapHeader(json.data);
 
-  console.log("Finished generation in " + (Date.now()  - this._initialized) + "ms. Writing output to map.otbm");
-
-  // Write the JSON using the OTBM2JSON lib
+  // Serialize the JSON using the OTBM2JSON lib
   return otbm2json.serialize(json);
 
 }
@@ -1128,7 +1142,11 @@ OTMapGenerator.prototype.mapElevation = function(z, b) {
     case (z < 0):
       return ITEMS.WATER_TILE_ID;
     case (z > 3):
-      return ITEMS.STONE_TILE_ID;
+      if(b > -1.5) {
+        return ITEMS.STONE_TILE_ID;
+      } else {
+        return ITEMS.SNOW_TILE_ID;
+      }
     default:
       if(b < -1.5) {
         return ITEMS.SAND_TILE_ID;
@@ -1261,7 +1279,7 @@ OTMapGenerator.prototype.getIndex = function(x, y) {
    * Converts x, y to layer index
    */
 
-  return x + y * this.CONFIGURATION.WIDTH;
+  return x + (y * this.CONFIGURATION.WIDTH);
 
 }
 
@@ -1326,15 +1344,26 @@ OTMapGenerator.prototype.zNoiseFunction = function(x, y) {
     var d = 2 * Math.max(Math.abs(nx), Math.abs(ny));
   }
 
-  var noise = this.CONFIGURATION.GENERATION.FREQUENCIES.reduce(function(total, x) {
-    return total + this.simplex2freq(x.f, x.weight, nx, ny);
-  }.bind(this), 0);
+  // Get the noise value
+  var noise = this.sumFrequencies(nx, ny);
 
   // Some exponent for mountains?
-  noise = Math.pow(noise, e);
+  noise = Math.pow(noise, e | 0);
 
   // Use distance from center to create an island
   return Math.round(f * (noise + a) * (1 - b * Math.pow(d, c))) - (w | 0);
+
+}
+
+OTMapGenerator.prototype.sumFrequencies = function(nx, ny) {
+
+  /* FUNCTION OTMapGenerator.sumFrequencies
+   * Sums all the noise frequencies
+   */
+
+  return this.CONFIGURATION.GENERATION.FREQUENCIES.reduce(function(total, x) {
+    return total + this.simplex2freq(x.f, x.weight, nx, ny);
+  }.bind(this), 0);
 
 }
 
@@ -1385,8 +1414,6 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
   
   }
 
-  console.log("Creating OTBM tile areas and adding clutter.");
-
   // Create hashmap for the tile areas
   var tileAreas = new Object();
   var self = this;
@@ -1394,6 +1421,9 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
   // Convert layers to OTBM tile areas
   layers.forEach(function(layer, z) {
   
+    // Invert the depth
+    var areaZ = 7 - z;
+
     // For all tiles on each layer
     layer.forEach(function(x, i) {
 
@@ -1403,9 +1433,6 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
       // Convert global x, y coordinates to tile area coordinates (0, 255, 510, 765)
       var areaX = self.TILE_AREA_SIZE * Math.floor(coordinates.x / self.TILE_AREA_SIZE);
       var areaY = self.TILE_AREA_SIZE * Math.floor(coordinates.y / self.TILE_AREA_SIZE);
-  
-      // Invert the depth
-      var areaZ = 7 - z;
   
       // Create a tile area identifier for use in a hashmap
       var areaIdentifier = areaX + "." + areaY + "." + areaZ;
@@ -1430,18 +1457,18 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
         var neighbours = self.getAdjacentTiles(layer, coordinates);
         
         // Mountain tile: border outside 
-        if(!items.length && x !== ITEMS.MOUNTAIN_TILE_ID) {
-          items = items.concat(border.getMountainWallOuter(neighbours));
+        if(x !== ITEMS.MOUNTAIN_TILE_ID) {
+          items.add(border.getMountainWallOuter(neighbours));
         }
         
-        // Empty tiles can be skipped now
+        // All empty tiles can be skipped
         if(x === 0) {
           return;
         }
         
         // Mountain tile: border inside  
         if(!items.length && x === ITEMS.MOUNTAIN_TILE_ID) {
-          items = items.concat(border.getMountainWall(neighbours));
+          items.add(border.getMountainWall(neighbours));
         }
         
         n = (self.simplex2freq(8, 3, coordinates.x, coordinates.y) + self.simplex2freq(16, 0.5, coordinates.x, coordinates.y) + self.simplex2freq(32, 0.5, coordinates.x, coordinates.y)) / 4;
@@ -1450,34 +1477,36 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
         // Check if the tile is occupied
         if(!items.length && x === ITEMS.GRASS_TILE_ID) {
           if(n > 0) {
-            items.push(clutter.randomTree());
+            items.add(clutter.randomTree());
           }
         }
+
+        var nWaterNeighbours = self.countNeighbours(neighbours, ITEMS.WATER_TILE_ID);
         
         // Add a random water plant
         if(!items.length && x === ITEMS.WATER_TILE_ID) {
-          items.push(clutter.randomWaterPlant(self.countNeighbours(neighbours, ITEMS.GRASS_TILE_ID)));
+          items.add(clutter.randomWaterPlant(self.countNeighbours(neighbours, ITEMS.GRASS_TILE_ID)));
         }
-        
-        if(!items.length && (x === ITEMS.GRASS_TILE_ID || x === ITEMS.SAND_TILE_ID) && self.countNeighbours(neighbours, ITEMS.WATER_TILE_ID)) {
+        if(!items.length && (x === ITEMS.GRASS_TILE_ID || x === ITEMS.SAND_TILE_ID) && nWaterNeighbours !== 0) {
           if(n > 0 && Math.random() < 0.075) {
-            items.push(clutter.randomSandstoneMossy());
+            items.add(clutter.randomSandstoneMossy());
           }
         }
         
+        // Clutter to be added to a sand tile
         if(!items.length && x === ITEMS.SAND_TILE_ID) {
-          if(n > 0 && Math.random() < 0.25 && self.countNeighbours(neighbours, ITEMS.WATER_TILE_ID) === 0) {
-            items.push(clutter.randomPebble());
+          if(n > 0 && Math.random() < 0.25 && nWaterNeighbours === 0) {
+            items.add(clutter.randomPebble());
           } else if(n > 0.33 && Math.random() < 0.25) {
-            items.push(clutter.randomCactus());
+            items.add(clutter.randomCactus());
           } else if(Math.random() < 0.45) {
-            items.push(clutter.randomPalmTree(neighbours));
-           } else if(z === 0 && Math.random() < 0.075) {
-            items.push(clutter.randomShell());
-           } else if(Math.random() < 0.015) {
-            items.push(clutter.randomSandstone());
-           }
-         }
+            items.add(clutter.randomPalmTree(neighbours));
+          } else if(z === 0 && Math.random() < 0.075) {
+           items.add(clutter.randomShell());
+          } else if(Math.random() < 0.015) {
+           items.add(clutter.randomSandstone());
+          }
+        }
         
         // Add a random water plant
         if(x === ITEMS.STONE_TILE_ID) {
@@ -1489,41 +1518,42 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
           }
         }
 
+        // Add grass border to gravel tile
         if(x === ITEMS.GRAVEL_TILE_ID) {
-          items = items.concat(border.getGrassBorder(neighbours));
+          items.add(border.getGrassBorder(neighbours));
         }
         
+        // Add water border for sand tile
         if(x === ITEMS.SAND_TILE_ID) {
-          items = items.concat(border.getWaterBorderSand(neighbours));
+          items.add(border.getWaterBorderSand(neighbours));
         }
         
+        // Add sand border to gravel and grass
         if(x === ITEMS.GRAVEL_TILE_ID || x === ITEMS.GRASS_TILE_ID) {
-          items = items.concat(border.getSandBorder(neighbours));
+          Array.prototype.push.apply(items, border.getSandBorder(neighbours));
         }
         
         // Border grass & water interface
         if(x === ITEMS.GRASS_TILE_ID) {
-          items = items.concat(border.getWaterBorder(neighbours));
+          items.add(border.getWaterBorder(neighbours));
         }
         
-        // Border on top of mountain
+        // Add wide border on top of mountain (multiple)
         if(x === ITEMS.GRASS_TILE_ID || x === ITEMS.STONE_TILE_ID || x === ITEMS.SAND_TILE_ID) {
-          items = items.concat(border.getFloatingBorder(neighbours));
+          Array.prototype.push.apply(items, border.getFloatingBorder(neighbours));
         }
         
         // Border at foot of mountain
         if(x !== ITEMS.MOUNTAIN_TILE_ID) {
-          items = items.concat(border.getMountainBorder(neighbours));
+          items.add(border.getMountainBorder(neighbours));
         }
 
+        // Version filter remove anything below a certain ID
+        items = items.filter(function(id) {
+          return id !== 0 && id < VERSIONS[self.CONFIGURATION.VERSION].maxId;
+        });
+
       }
-
-      // Randomize the tile
-      x = clutter.randomizeTile(x);
-
-      items = items.filter(function(y) {
-        return y < VERSIONS[self.CONFIGURATION.VERSION].maxId;
-      }).map(createOTBMItem);
 
       // Add the tile to the tile area
       // Make sure to give coordinates in RELATIVE tile area coordinates
@@ -1531,8 +1561,8 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
         "type": otbm2json.HEADERS.OTBM_TILE,
         "x": coordinates.x % self.TILE_AREA_SIZE,
         "y": coordinates.y % self.TILE_AREA_SIZE,
-        "tileid": x,
-        "items": items
+        "tileid": clutter.randomizeTile(x),
+        "items": items.map(createOTBMItem)
       });
   
     });
@@ -1543,17 +1573,29 @@ OTMapGenerator.prototype.generateTileAreas = function(layers) {
 
 }
 
+Array.prototype.add = function(id) {
+
+  /* Array.prototype.add
+   * Pushes item to array if it is not null
+   */
+
+  if(id !== null) {
+    this.push(id);
+  }
+
+}
+
 // Expose the class
 module.exports.OTMapGenerator = new OTMapGenerator();
 module.exports.__VERSION__ = __VERSION__;
 
 if(require.main === module) {
 
-  otbm2json.write("map.otbm", module.exports.OTMapGenerator.generate());
+  fs.writeFileSync("map.otbm", module.exports.OTMapGenerator.generate());
 
 }
 
-},{"./OTBM2JSON/otbm2json":2,"./json/header":4,"./json/items":5,"./json/versions":6,"./lib/border":7,"./lib/clutter":8,"./lib/noise":9}],4:[function(require,module,exports){
+},{"./OTBM2JSON/otbm2json":2,"./json/header":4,"./json/items":5,"./json/versions":6,"./lib/border":7,"./lib/clutter":8,"./lib/noise":9,"fs":10}],4:[function(require,module,exports){
 module.exports={
         "version": "1.0.0",
         "identifier": 0,
@@ -1584,10 +1626,13 @@ module.exports={
   "GRAVEL_TILE_ID": 4570,
   "MOUNTAIN_TILE_ID": 919,
   "SAND_TILE_ID": 231,
+  "SNOW_TILE_ID": 6580,
 
   "WATER_TILE_END": 4619,
   "STONE_TILE_END": 4421,
   "GRASS_TILE_END": 4541,
+  "GRAVEL_TILE_END": 4579,
+  "SNOW_TILE_END": 6593,
 
   "SHELL": 5679,
   "SPIRAL_SHELL": 5680,
@@ -1642,6 +1687,17 @@ module.exports={
   "MOUNTAIN_WALL_INNER_W_SE": 4496,
   "MOUNTAIN_WALL_INNER_S_N": 4494,
   "MOUNTAIN_WALL_INNER_E_W": 4501,
+
+  "SNOW_MOUNTAIN_WALL_N": 6719,
+  "SNOW_MOUNTAIN_WALL_S": 6720,
+  "SNOW_MOUNTAIN_WALL_SE": 6720,
+  "SNOW_MOUNTAIN_WALL_SW": 6721,
+  "SNOW_MOUNTAIN_WALL_NE": 6722,
+  "SNOW_MOUNTAIN_WALL_NW": 6723,
+  "SNOW_MOUNTAIN_INNER_WALL_NW": 6724,
+  "SNOW_MOUNTAIN_INNER_WALL_SW": 6725,
+  "SNOW_MOUNTAIN_INNER_WALL_NE": 6726,
+  "SNOW_MOUNTAIN_INNER_WALL_SE": 6727,
 
   "MOUNTAIN_BORDER_NORTH": 891,
   "MOUNTAIN_BORDER_EAST": 892,
@@ -1809,72 +1865,72 @@ function getMountainWallOuter(neighbours) {
   
 
   if(neighbours.N === ITEMS.MOUNTAIN_TILE_ID && neighbours.W === ITEMS.MOUNTAIN_TILE_ID && neighbours.SE === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_INNER_NW_SE];
+    return ITEMS.MOUNTAIN_WALL_INNER_NW_SE;
   }
 
   if(neighbours.S === ITEMS.MOUNTAIN_TILE_ID && neighbours.W === ITEMS.MOUNTAIN_TILE_ID && neighbours.E === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_INNER_SW_E];
+    return ITEMS.MOUNTAIN_WALL_INNER_SW_E;
   }
 
   if(neighbours.W === ITEMS.MOUNTAIN_TILE_ID && neighbours.SE === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_INNER_W_SE];
+    return ITEMS.MOUNTAIN_WALL_INNER_W_SE;
   }
 
   if(neighbours.S === ITEMS.MOUNTAIN_TILE_ID && neighbours.W === ITEMS.MOUNTAIN_TILE_ID) {
     if(Math.random() < 0.5) {
-      return [ITEMS.MOUNTAIN_WALL_INNER_NE];
+      return ITEMS.MOUNTAIN_WALL_INNER_NE;
     } else {
-      return [ITEMS.MOUNTAIN_WALL_N];
+      return ITEMS.MOUNTAIN_WALL_N;
     }
   }
 
   if(neighbours.N === ITEMS.MOUNTAIN_TILE_ID & neighbours.S === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_INNER_S_N];
+    return ITEMS.MOUNTAIN_WALL_INNER_S_N;
   }
 
   if(neighbours.E === ITEMS.MOUNTAIN_TILE_ID & neighbours.W === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_INNER_E_W];
+    return ITEMS.MOUNTAIN_WALL_INNER_E_W;
   }
 
   if(neighbours.E === ITEMS.MOUNTAIN_TILE_ID && neighbours.S === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_INNER_NW];
+    return ITEMS.MOUNTAIN_WALL_INNER_NW;
   }
 
   if(neighbours.E === ITEMS.MOUNTAIN_TILE_ID && neighbours.N === ITEMS.MOUNTAIN_TILE_ID) {
     if(Math.random() < 0.5) {
-      return [ITEMS.MOUNTAIN_WALL_INNER_SW];
+      return ITEMS.MOUNTAIN_WALL_INNER_SW;
     } else {
-      return [ITEMS.MOUNTAIN_WALL_W];
+      return ITEMS.MOUNTAIN_WALL_W;
     }
   }
 
   if(neighbours.W === ITEMS.MOUNTAIN_TILE_ID && Math.random() < 0.5) {
-    return [ITEMS.MOUNTAIN_WALL_E];
+    return ITEMS.MOUNTAIN_WALL_E;
   }
 
   if(neighbours.N === ITEMS.MOUNTAIN_TILE_ID && Math.random() < 0.5) {
-    return [ITEMS.MOUNTAIN_WALL_S];
+    return ITEMS.MOUNTAIN_WALL_S;
   }
 
   if(neighbours.S === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_N];
+    return ITEMS.MOUNTAIN_WALL_N;
   }
 
   if(neighbours.E === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_W];
+    return ITEMS.MOUNTAIN_WALL_W;
   }
 
   if(neighbours.SE === ITEMS.MOUNTAIN_TILE_ID) { 
-    return [ITEMS.MOUNTAIN_WALL_SE];
+    return ITEMS.MOUNTAIN_WALL_SE;
   }
 
   if(neighbours.SW === ITEMS.MOUNTAIN_TILE_ID && neighbours.W !== ITEMS.MOUNTAIN_TILE_ID && neighbours.S !== ITEMS.MOUNTAIN_TILE_ID) {
     if(Math.random() < 0.33) {
-      return [ITEMS.MOUNTAIN_WALL_NE];
+      return ITEMS.MOUNTAIN_WALL_NE;
     }
   }
 
-  return new Array();
+  return null;
 
 }
 
@@ -1918,20 +1974,17 @@ function getFloatingBorder(neighbours) {
   if(neighbours.NW === 0 && neighbours.N !== 0 && neighbours.W !== 0) {
     borders.push(ITEMS.MOUNTAIN_BORDER_INNER_NW);
   }
-
   if(neighbours.NE === 0 && neighbours.E !== 0 && neighbours.N !== 0) {
     borders.push(ITEMS.MOUNTAIN_BORDER_INNER_NE);
   }
-
   if(neighbours.SE === 0 && neighbours.E !== 0 && neighbours.S !== 0) {
     borders.push(ITEMS.MOUNTAIN_BORDER_INNER_SE);
   }
-
   if(neighbours.SW === 0 && neighbours.W !== 0 && neighbours.S !== 0) {
     borders.push(ITEMS.MOUNTAIN_BORDER_INNER_SW);
   }
 
-  return borders;
+  return borders.length ? borders : null;
 
 }
 
@@ -1978,65 +2031,65 @@ function getSandBorder(neighbours) {
     borders.push(ITEMS.SAND_BORDER_INNER_NW);
   }
 
-  return borders;
+  return borders.length ? borders : null;
 
 }
 
 function getWaterBorderSand(neighbours) {
 
   if(neighbours.S === ITEMS.WATER_TILE_ID && neighbours.NW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_SW];
+    return ITEMS.WATER_SAND_BORDER_SW;
   }
   if(neighbours.N === ITEMS.WATER_TILE_ID && neighbours.SE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_NE];
+    return ITEMS.WATER_SAND_BORDER_NE;
   }
   if(neighbours.W === ITEMS.WATER_TILE_ID && neighbours.NE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_NW];
+    return ITEMS.WATER_SAND_BORDER_NW;
   }
   if(neighbours.E === ITEMS.WATER_TILE_ID && neighbours.SW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_SE];
+    return ITEMS.WATER_SAND_BORDER_SE;
   }
 
   if(neighbours.N === ITEMS.WATER_TILE_ID && neighbours.E === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_NE];
+    return ITEMS.WATER_SAND_BORDER_NE;
   }
   if(neighbours.E === ITEMS.WATER_TILE_ID && neighbours.S === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_SE];
+    return ITEMS.WATER_SAND_BORDER_SE;
   }
   if(neighbours.S === ITEMS.WATER_TILE_ID && neighbours.W === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_SW];
+    return ITEMS.WATER_SAND_BORDER_SW;
   }
   if(neighbours.W === ITEMS.WATER_TILE_ID && neighbours.N === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_NW];
+    return ITEMS.WATER_SAND_BORDER_NW;
   }
 
   if(neighbours.W === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_W];
+    return ITEMS.WATER_SAND_BORDER_W;
   }
   if(neighbours.N === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_N];
+    return ITEMS.WATER_SAND_BORDER_N;
   }
   if(neighbours.S === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_S];
+    return ITEMS.WATER_SAND_BORDER_S;
   }
   if(neighbours.E === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_E];
+    return ITEMS.WATER_SAND_BORDER_E;
   }
 
   if(neighbours.NE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_INNER_NE];
+    return ITEMS.WATER_SAND_BORDER_INNER_NE;
   }
   if(neighbours.SE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_INNER_SE];
+    return ITEMS.WATER_SAND_BORDER_INNER_SE;
   }
   if(neighbours.SW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_INNER_SW];
+    return ITEMS.WATER_SAND_BORDER_INNER_SW;
   }
   if(neighbours.NW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_SAND_BORDER_INNER_NW];
+    return ITEMS.WATER_SAND_BORDER_INNER_NW;
   }
 
-  return new Array();
+  return null;
 
 }
 
@@ -2048,128 +2101,132 @@ function getWaterBorder(neighbours) {
 
   // Edge cases
   if(neighbours.S === ITEMS.WATER_TILE_ID && neighbours.NW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_SW];
+    return ITEMS.WATER_GRASS_BORDER_SW;
   }
   if(neighbours.N === ITEMS.WATER_TILE_ID && neighbours.SE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_NE];
+    return ITEMS.WATER_GRASS_BORDER_NE;
   }
   if(neighbours.W === ITEMS.WATER_TILE_ID && neighbours.NE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_NW];
+    return ITEMS.WATER_GRASS_BORDER_NW;
   }
   if(neighbours.E === ITEMS.WATER_TILE_ID && neighbours.SW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_SE];
+    return ITEMS.WATER_GRASS_BORDER_SE;
   }
 
   if(neighbours.N === ITEMS.WATER_TILE_ID && neighbours.E === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_NE];
+    return ITEMS.WATER_GRASS_BORDER_NE;
   }
   if(neighbours.E === ITEMS.WATER_TILE_ID && neighbours.S === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_SE];
+    return ITEMS.WATER_GRASS_BORDER_SE;
   }
   if(neighbours.S === ITEMS.WATER_TILE_ID && neighbours.W === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_SW];
+    return ITEMS.WATER_GRASS_BORDER_SW;
   }
   if(neighbours.W === ITEMS.WATER_TILE_ID && neighbours.N === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_NW];
+    return ITEMS.WATER_GRASS_BORDER_NW;
   }
 
   if(neighbours.W === ITEMS.WATER_TILE_ID) {
     if(neighbours.N === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_SANDEARTH_W];
+      return ITEMS.BORDER_SANDEARTH_W;
     } else if(neighbours.S === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_EARTHSAND_W];
+      return ITEMS.BORDER_EARTHSAND_W;
     } else {
-      return [ITEMS.WATER_GRASS_BORDER_W];
+      return ITEMS.WATER_GRASS_BORDER_W;
     }
   }
   if(neighbours.N === ITEMS.WATER_TILE_ID) {
     if(neighbours.E === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_EARTHSAND_N];
+      return ITEMS.BORDER_EARTHSAND_N;
     } else if(neighbours.W === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_SANDEARTH_N];
+      return ITEMS.BORDER_SANDEARTH_N;
     } else {
-      return [ITEMS.WATER_GRASS_BORDER_N];
+      return ITEMS.WATER_GRASS_BORDER_N;
     }
   }
   if(neighbours.S === ITEMS.WATER_TILE_ID) {
     if(neighbours.E === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_EARTHSAND_S];
+      return ITEMS.BORDER_EARTHSAND_S;
     } else if(neighbours.W === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_SANDEARTH_S];
+      return ITEMS.BORDER_SANDEARTH_S;
     } else {
-      return [ITEMS.WATER_GRASS_BORDER_S];
+      return ITEMS.WATER_GRASS_BORDER_S;
     }
   }
   if(neighbours.E === ITEMS.WATER_TILE_ID) {
     if(neighbours.N === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_SANDEARTH_E];
+      return ITEMS.BORDER_SANDEARTH_E;
     } else if(neighbours.S === ITEMS.SAND_TILE_ID) {
-      return [ITEMS.BORDER_EARTHSAND_E];
+      return ITEMS.BORDER_EARTHSAND_E;
     } else {
-      return [ITEMS.WATER_GRASS_BORDER_E];
+      return ITEMS.WATER_GRASS_BORDER_E;
     }
   }
 
   if(neighbours.NE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_INNER_NE];
+    return ITEMS.WATER_GRASS_BORDER_INNER_NE;
   }
   if(neighbours.SE === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_INNER_SE];
+    return ITEMS.WATER_GRASS_BORDER_INNER_SE;
   }
   if(neighbours.SW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_INNER_SW];
+    return ITEMS.WATER_GRASS_BORDER_INNER_SW;
   }
   if(neighbours.NW === ITEMS.WATER_TILE_ID) {
-    return [ITEMS.WATER_GRASS_BORDER_INNER_NW];
+    return ITEMS.WATER_GRASS_BORDER_INNER_NW;
   }
 
-  return new Array();
+  return null;
 
 }
 
 
 function getGrassBorder(neighbours) {
 
+  /* FUNCTION getGrassBorder
+   * Returns the appropriate grass border
+   */
+
   if(neighbours.N === ITEMS.GRASS_TILE_ID && neighbours.E === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_INNER_NE];
+    return ITEMS.GRASS_BORDER_INNER_NE;
   }
   if(neighbours.E === ITEMS.GRASS_TILE_ID && neighbours.S === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_INNER_SE];
+    return ITEMS.GRASS_BORDER_INNER_SE;
   }
   if(neighbours.S === ITEMS.GRASS_TILE_ID && neighbours.W === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_INNER_SW];
+    return ITEMS.GRASS_BORDER_INNER_SW;
   }
   if(neighbours.W === ITEMS.GRASS_TILE_ID && neighbours.N === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_INNER_NW];
+    return ITEMS.GRASS_BORDER_INNER_NW;
   }
 
   if(neighbours.W === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_W];
+    return ITEMS.GRASS_BORDER_W;
   }
   if(neighbours.N === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_N];
+    return ITEMS.GRASS_BORDER_N;
   }
   if(neighbours.S === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_S];
+    return ITEMS.GRASS_BORDER_S;
   }
   if(neighbours.E === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_E];
+    return ITEMS.GRASS_BORDER_E;
   }
 
   if(neighbours.NE === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_NE];
+    return ITEMS.GRASS_BORDER_NE;
   }
   if(neighbours.SE === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_SE];
+    return ITEMS.GRASS_BORDER_SE;
   }
   if(neighbours.SW === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_SW];
+    return ITEMS.GRASS_BORDER_SW;
   }
   if(neighbours.NW === ITEMS.GRASS_TILE_ID) {
-    return [ITEMS.GRASS_BORDER_NW];
+    return ITEMS.GRASS_BORDER_NW;
   }
 
-  return new Array();
+  return null;
 
 }
 
@@ -2180,38 +2237,38 @@ function getMountainBorder(neighbours) {
    */
 
   if(neighbours.W === ITEMS.MOUNTAIN_TILE_ID && neighbours.N === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_INNER_NW];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_INNER_NW;
   }
 
   if(neighbours.N === ITEMS.MOUNTAIN_TILE_ID && neighbours.E === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_INNER_NE];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_INNER_NE;
   }
 
   if(neighbours.N === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_NORTH];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_NORTH;
   }
 
   if(neighbours.S === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_SOUTH];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_SOUTH;
   }
 
   if(neighbours.W === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_WEST];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_WEST;
   }
 
   if(neighbours.NE === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_NE];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_NE;
   }
 
   if(neighbours.NW === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_NW];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_NW;
   }
 
   if(neighbours.SW === ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_FOOT_BORDER_SW];
+    return ITEMS.MOUNTAIN_FOOT_BORDER_SW;
   }
 
-  return new Array();
+  return null;
 
 }
 
@@ -2222,18 +2279,16 @@ function getMountainWall(neighbours) {
    */
 
   if(neighbours.E !== ITEMS.MOUNTAIN_TILE_ID && neighbours.S !== ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_OUTER_XY];
+    return ITEMS.MOUNTAIN_WALL_OUTER_XY;
   }
-
   if(neighbours.E !== ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_OUTER_Y];
+    return ITEMS.MOUNTAIN_WALL_OUTER_Y;
   }
-
   if(neighbours.S !== ITEMS.MOUNTAIN_TILE_ID) {
-    return [ITEMS.MOUNTAIN_WALL_OUTER_X];
+    return ITEMS.MOUNTAIN_WALL_OUTER_X;
   }
 
-  return new Array();
+  return null;
 
 }
 
@@ -2245,6 +2300,7 @@ module.exports.getMountainWall = getMountainWall;
 module.exports.getWaterBorderSand = getWaterBorderSand;
 module.exports.getSandBorder = getSandBorder;
 module.exports.getGrassBorder = getGrassBorder;
+
 },{"../json/items":5}],8:[function(require,module,exports){
 const ITEMS = require("../json/items");
 
@@ -2254,7 +2310,7 @@ function getRandomBetween(min, max) {
    * Returns an integer between min, max (inclusive)
    */
 
-  return Math.floor(Math.random() * (max - min + 1) ) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 
 }
 
@@ -2341,12 +2397,12 @@ function randomWaterPlant(nNeighbours) {
 
   // "Swamp" plants
   if(nNeighbours > 2 && Math.random() < 0.2) {
-    return [getRandomBetween(ITEMS.SWAMP_PLANT_START, ITEMS.SWAMP_PLANT_END)];
+    return getRandomBetween(ITEMS.SWAMP_PLANT_START, ITEMS.SWAMP_PLANT_END);
   }
 
   // Water lillies
   if(nNeighbours > 1 && Math.random() < 0.1) {
-    return [getRandomBetween(ITEMS.WATER_LILY_START, ITEMS.WATER_LILY_END)];
+    return getRandomBetween(ITEMS.WATER_LILY_START, ITEMS.WATER_LILY_END);
   }
 
   return new Array();
@@ -2354,6 +2410,10 @@ function randomWaterPlant(nNeighbours) {
 }
 
 function randomSandstoneMossy() {
+
+  /* FUNCTION randomSandstoneMossy
+   * Returns a random moss tile for stone tiles
+   */
 
   return getRandomBetween(ITEMS.SMALL_MOSSY_STONE_START, ITEMS.SMALL_MOSSY_STONE_END);
 
@@ -2387,10 +2447,10 @@ function randomPalmTree(neighbours) {
    */
 
   if(Math.random() < 0.1) {
-    return [getRandomBetween(ITEMS.PALM_TREE, ITEMS.COCONUT_PALM_TREE)];
+    return getRandomBetween(ITEMS.PALM_TREE, ITEMS.COCONUT_PALM_TREE);
   }
 
-  return new Array();
+  return null; 
 
 }
 
@@ -2461,7 +2521,7 @@ function randomizeTile(x) {
   }
 
   function getRandomGravel() {
-    return getRandomBetween(4570, 4579);
+    return getRandomBetween(ITEMS.GRAVEL_TILE_ID, ITEMS.GRAVEL_TILE_END);
   }
 
   switch(x) {
@@ -2471,7 +2531,7 @@ function randomizeTile(x) {
       return getRandomMountainTile();
     case ITEMS.WATER_TILE_ID:
       return getRandomWaterTile();
-    case 4570:
+    case ITEMS.GRAVEL_TILE_ID:
       return getRandomGravel();
 	default:
       return x;
