@@ -225,8 +225,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // PNG Watermark
     context.fillStyle = "white";
     context.font = "bold 14px sans-serif";
-    context.fillText("Minimap Preview Floor: " + _activeLayer, 6, 18);
-    context.fillText("Seed: " + _layerData.metadata.SEED.toString(16).toUpperCase(), 6, 36);
+    //context.fillText("Minimap Preview Floor: " + _activeLayer, 6, 18);
+    //context.fillText("Seed: " + _layerData.metadata.SEED.toString(16).toUpperCase(), 6, 36);
 
   }
 
